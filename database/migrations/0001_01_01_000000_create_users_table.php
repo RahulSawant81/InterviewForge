@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone', 20)->nullable();
+            $table->enum('role', ['super_admin', 'admin', 'user'])->default('user');
+            $table->tinyInteger('status')->default(1); // 1 for active, 0 for inactive
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
