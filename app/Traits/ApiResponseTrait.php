@@ -2,9 +2,12 @@
 
 namespace App\Traits;
 
+use Illuminate\Http\JsonResponse;
+
 trait ApiResponseTrait
 {
-    public function successResponse($data = [], $message = 'Success', $code = 200)
+    // Standard success envelope used by all API endpoints.
+    public function successResponse(mixed $data = [], string $message = 'Success', int $code = 200): JsonResponse
     {
         return response()->json([
             'status' => 'true',
@@ -13,11 +16,12 @@ trait ApiResponseTrait
         ], $code);
     }
 
-    public function errorResponse($message = 'Error', $code = 400)
+    // Standard error envelope used by all API endpoints.
+    public function errorResponse(string $message = 'Error', int $code = 400): JsonResponse
     {
         return response()->json([
             'status' => 'false',
-            'message' => $message
+            'message' => $message,
         ], $code);
     }
 }

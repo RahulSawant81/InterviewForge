@@ -2,64 +2,56 @@
 
 namespace App\Services\Auth;
 
-use App\Models\User;
 use App\Models\Profile;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AuthenticationService
 {
     /**
-     * Create a new class instance.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Handle user registration.
-     * @return User
-     *
      */
     public function register(array $data): User
     {
-        // Registration logic
+        // Create the user and the linked profile in one transaction to avoid partial data.
+        return DB::transaction(function () use ($data) {
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+            ]);
 
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
-        Profile::create([
-            'user_id' => $user->id,
-        ]);
+            Profile::create([
+                'user_id' => $user->id,
+            ]);
 
-        return $user;
+            return $user->load('profile');
+        });
     }
 
     /**
      * Handle user login.
-     * @return array|null
+     *
+     * @return array{user: User, token: string}|null
      */
     public function login(array $data): ?array
     {
-        // Login logic
-
         $user = User::where('email', $data['email'])->first();
 
-        if (!$user) {
+        if (! $user) {
             return null;
         }
 
-        if (!Hash::check($data['password'], $user->password)) {
+        if (! Hash::check($data['password'], $user->password)) {
             return null;
         }
 
         $token = $user->createToken('InterviewForge')->plainTextToken;
 
         return [
-            'user' => $user,
-            'token' => $token
+            'user' => $user->load('profile'),
+            'token' => $token,
         ];
     }
 
@@ -68,8 +60,7 @@ class AuthenticationService
      */
     public function logout(User $user): void
     {
-        // Logout logic
-
+        // Revoke every active token for a full logout across devices.
         $user->tokens()->delete();
     }
 }

@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Profile extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'profile_image',
@@ -17,7 +20,7 @@ class Profile extends Model
         'linkedin_url',
         'github_url',
         'portfolio_url',
-        'bio'
+        'bio',
     ];
 
     public function user()
