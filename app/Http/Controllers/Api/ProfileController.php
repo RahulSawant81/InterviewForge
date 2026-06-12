@@ -26,6 +26,8 @@ class ProfileController extends Controller
         // Every authenticated user should resolve to a single profile record.
         $profile = $this->profileService->getProfile((int) auth()->id());
 
+        $this->authorize('view', $profile);
+
         return $this->successResponse(
             new ProfileResource($profile)
         );
@@ -34,6 +36,8 @@ class ProfileController extends Controller
     public function update(ProfileRequest $request): JsonResponse
     {
         $profile = $this->profileService->getProfile((int) auth()->id());
+
+        $this->authorize('update', $profile);
 
         $updatedProfile = $this->profileService->updateProfile(
             $profile, $request->validated()
@@ -49,6 +53,8 @@ class ProfileController extends Controller
     {
         // This performs a soft delete so profile data can be recovered later if needed.
         $profile = $this->profileService->getProfile((int) auth()->id());
+
+        $this->authorize('delete', $profile);
 
         $this->profileService->deleteProfile($profile);
 
