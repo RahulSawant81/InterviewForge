@@ -1,0 +1,270 @@
+{
+  "info": {
+    "_postman_id": "7c2a2a2e-7e43-4d1d-b66a-2f3e8a0db201",
+    "name": "InterviewForge API",
+    "description": "Postman collection for the current auth and profile API endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rahul Sawant\",\n  \"email\": \"rahul@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
+            },
+            "url": "{{base_url}}/v1/register",
+            "description": "Create a new user and the linked profile record."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json?.data?.token) {",
+                  "    pm.collectionVariables.set('token', json.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"rahul@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": "{{base_url}}/v1/login",
+            "description": "Authenticate a user and automatically save the bearer token into the collection variable."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/logout",
+            "description": "Revoke the authenticated user's tokens."
+          },
+          "response": []
+        },
+        {
+          "name": "Me",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/me",
+            "description": "Return the authenticated user with the linked profile."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/profile",
+            "description": "Fetch the current user's profile."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "profile_image",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "headline",
+                  "value": "Senior PHP Developer",
+                  "type": "text"
+                },
+                {
+                  "key": "experience_years",
+                  "value": "4.5",
+                  "type": "text"
+                },
+                {
+                  "key": "current_company",
+                  "value": "InterviewForge",
+                  "type": "text"
+                },
+                {
+                  "key": "current_ctc",
+                  "value": "12.50",
+                  "type": "text"
+                },
+                {
+                  "key": "expected_ctc",
+                  "value": "18.00",
+                  "type": "text"
+                },
+                {
+                  "key": "linkedin_url",
+                  "value": "https://www.linkedin.com/in/rahul",
+                  "type": "text"
+                },
+                {
+                  "key": "github_url",
+                  "value": "https://github.com/rahul",
+                  "type": "text"
+                },
+                {
+                  "key": "portfolio_url",
+                  "value": "https://rahul.dev",
+                  "type": "text"
+                },
+                {
+                  "key": "bio",
+                  "value": "Building Laravel APIs and interview tooling.",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": "{{base_url}}/v1/profile",
+            "description": "Update the current user's profile. Leave profile_image empty if you do not want to upload a file."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/profile",
+            "description": "Soft delete the current user's profile."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
