@@ -5,9 +5,12 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+
+use App\Enum\UserStatus;
 
 class User extends Authenticatable
 {
@@ -22,8 +25,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
+        'status',
         'password',
-        'role'
+        'role_id',
     ];
 
     /**
@@ -46,11 +51,27 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'status' => UserStatus::class,
         ];
     }
 
     public function profile()
     {
         return $this->hasOne(Profile::class);
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function hasRole(string $roleName): bool
+    {
+        return $this->role?->name === $roleName;
+    }
+
+    public function hasPermission(string $permissionName): bool
+    {
+        return $this->role?->permissions->contains('name', $permissionName) ?? false;
     }
 }

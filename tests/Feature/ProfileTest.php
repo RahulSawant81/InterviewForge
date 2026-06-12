@@ -2,7 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\City;
+use App\Models\Country;
 use App\Models\Profile;
+use App\Models\State;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -34,6 +37,9 @@ class ProfileTest extends TestCase
     public function test_authenticated_user_can_update_profile_with_image(): void
     {
         Storage::fake('public');
+        $country = Country::query()->where('name', 'India')->firstOrFail();
+        $state = State::query()->where('name', 'Maharashtra')->firstOrFail();
+        $city = City::query()->where('name', 'Pune')->firstOrFail();
 
         $user = User::factory()->create();
         Profile::create([
@@ -44,6 +50,11 @@ class ProfileTest extends TestCase
 
         $response = $this->patch('/api/v1/profile', [
             'profile_image' => UploadedFile::fake()->image('avatar.jpg'),
+            'phone_code' => '91',
+            'phone' => '9876543210',
+            'country_id' => $country->id,
+            'state_id' => $state->id,
+            'city_id' => $city->id,
             'headline' => 'Senior PHP Developer',
             'experience_years' => 4.5,
             'current_company' => 'InterviewForge',
@@ -57,12 +68,21 @@ class ProfileTest extends TestCase
 
         $response->assertOk()
             ->assertJsonPath('message', 'Profile updated successfully')
+            ->assertJsonPath('data.phone_code', '91')
+            ->assertJsonPath('data.country_id', $country->id)
+            ->assertJsonPath('data.country', 'India')
+            ->assertJsonPath('data.state_id', $state->id)
+            ->assertJsonPath('data.state', 'Maharashtra')
+            ->assertJsonPath('data.city_id', $city->id)
+            ->assertJsonPath('data.city', 'Pune')
             ->assertJsonPath('data.headline', 'Senior PHP Developer');
 
         $profile = $user->fresh()->profile;
 
         $this->assertNotNull($profile);
         $this->assertNotNull($profile->profile_image);
+        $this->assertSame('9876543210', $profile->phone);
+        $this->assertSame($country->id, $profile->country_id);
         Storage::disk('public')->assertExists($profile->profile_image);
     }
 
