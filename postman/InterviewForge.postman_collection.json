@@ -2,57 +2,53 @@
   "info": {
     "_postman_id": "7c2a2a2e-7e43-4d1d-b66a-2f3e8a0db201",
     "name": "InterviewForge API",
-    "description": "Postman collection for the current auth and profile API endpoints.",
+    "description": "Comprehensive Postman collection for InterviewForge backend with authentication, profile management, role-based authorization, and password reset flows.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     {
       "key": "base_url",
-      "value": "http://127.0.0.1:8000/api"
+      "value": "http://127.0.0.1:81/api",
+      "type": "string"
     },
     {
       "key": "token",
-      "value": ""
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_email",
+      "value": "user@example.com",
+      "type": "string"
+    },
+    {
+      "key": "user_password",
+      "value": "password123",
+      "type": "string"
+    },
+    {
+      "key": "reset_token",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
     {
-      "name": "Auth",
+      "name": "Authentication",
       "item": [
         {
           "name": "Register",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Rahul Sawant\",\n  \"email\": \"rahul@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
-            },
-            "url": "{{base_url}}/v1/register",
-            "description": "Create a new user and the linked profile record."
-          },
-          "response": []
-        },
-        {
-          "name": "Login",
           "event": [
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
                 "exec": [
-                  "const json = pm.response.json();",
-                  "if (json?.data?.token) {",
-                  "    pm.collectionVariables.set('token', json.data.token);",
+                  "if (pm.response.code === 201) {",
+                  "  const token = pm.response.json().data.token;",
+                  "  pm.collectionVariables.set('token', token);",
+                  "  pm.test('User registered successfully with token', function () {",
+                  "    pm.expect(token).to.exist;",
+                  "  });",
                   "}"
                 ]
               }
@@ -72,195 +68,267 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"rahul@example.com\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"name\": \"New User\",\n  \"email\": \"{{user_email}}\",\n  \"password\": \"{{user_password}}\",\n  \"password_confirmation\": \"{{user_password}}\"\n}"
             },
-            "url": "{{base_url}}/v1/login",
-            "description": "Authenticate a user and automatically save the bearer token into the collection variable."
+            "url": {
+              "raw": "{{base_url}}/v1/register",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "register"]
+            },
+            "description": "Register a new user and create a linked profile record."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const token = pm.response.json().data.token;",
+                  "  pm.collectionVariables.set('token', token);",
+                  "  pm.test('Login successful with token', function () {",
+                  "    pm.expect(token).to.exist;",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{user_email}}\",\n  \"password\": \"{{user_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/login",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "login"]
+            },
+            "description": "Authenticate user and receive Sanctum token."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User (Me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/me",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "me"]
+            },
+            "description": "Retrieve the currently authenticated user's profile and role information."
           },
           "response": []
         },
         {
           "name": "Logout",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "POST",
             "header": [
               {
                 "key": "Accept",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
               }
             ],
-            "url": "{{base_url}}/v1/logout",
-            "description": "Revoke the authenticated user's tokens."
+            "url": {
+              "raw": "{{base_url}}/v1/logout",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "logout"]
+            },
+            "description": "Revoke all active authentication tokens."
           },
           "response": []
         },
         {
-          "name": "Me",
+          "name": "Forgot Password",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
+            "method": "POST",
             "header": [
               {
                 "key": "Accept",
                 "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/v1/me",
-            "description": "Return the authenticated user with the linked profile."
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{user_email}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/forgot-password",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "forgot-password"]
+            },
+            "description": "Request a password reset token (sent via email in production)."
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{user_email}}\",\n  \"token\": \"{{reset_token}}\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/reset-password",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "reset-password"]
+            },
+            "description": "Reset password using the token received via email."
           },
           "response": []
         }
       ]
     },
     {
-      "name": "Profile",
+      "name": "Profile Management",
       "item": [
         {
           "name": "Get Profile",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [
               {
                 "key": "Accept",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
               }
             ],
-            "url": "{{base_url}}/v1/profile",
-            "description": "Fetch the current user's profile."
+            "url": {
+              "raw": "{{base_url}}/v1/profile",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "profile"]
+            },
+            "description": "Retrieve the currently authenticated user's profile. Protected by ProfilePolicy."
           },
           "response": []
         },
         {
           "name": "Update Profile",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "PATCH",
             "header": [
               {
                 "key": "Accept",
                 "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
               }
             ],
             "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "profile_image",
-                  "type": "file",
-                  "src": ""
-                },
-                {
-                  "key": "headline",
-                  "value": "Senior PHP Developer",
-                  "type": "text"
-                },
-                {
-                  "key": "experience_years",
-                  "value": "4.5",
-                  "type": "text"
-                },
-                {
-                  "key": "current_company",
-                  "value": "InterviewForge",
-                  "type": "text"
-                },
-                {
-                  "key": "current_ctc",
-                  "value": "12.50",
-                  "type": "text"
-                },
-                {
-                  "key": "expected_ctc",
-                  "value": "18.00",
-                  "type": "text"
-                },
-                {
-                  "key": "linkedin_url",
-                  "value": "https://www.linkedin.com/in/rahul",
-                  "type": "text"
-                },
-                {
-                  "key": "github_url",
-                  "value": "https://github.com/rahul",
-                  "type": "text"
-                },
-                {
-                  "key": "portfolio_url",
-                  "value": "https://rahul.dev",
-                  "type": "text"
-                },
-                {
-                  "key": "bio",
-                  "value": "Building Laravel APIs and interview tooling.",
-                  "type": "text"
-                }
-              ]
+              "mode": "raw",
+              "raw": "{\n  \"headline\": \"Software Engineer\",\n  \"bio\": \"Passionate about building great software.\",\n  \"experience_years\": 5,\n  \"current_company\": \"TechCorp\",\n  \"current_ctc\": \"1200000\",\n  \"expected_ctc\": \"1500000\",\n  \"linkedin_url\": \"https://linkedin.com/in/example\",\n  \"github_url\": \"https://github.com/example\",\n  \"portfolio_url\": \"https://example.com\"\n}"
             },
-            "url": "{{base_url}}/v1/profile",
-            "description": "Update the current user's profile. Leave profile_image empty if you do not want to upload a file."
+            "url": {
+              "raw": "{{base_url}}/v1/profile",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "profile"]
+            },
+            "description": "Update the currently authenticated user's profile information. Protected by ProfilePolicy."
           },
           "response": []
         },
         {
           "name": "Delete Profile",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "DELETE",
             "header": [
               {
                 "key": "Accept",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
               }
             ],
-            "url": "{{base_url}}/v1/profile",
-            "description": "Soft delete the current user's profile."
+            "url": {
+              "raw": "{{base_url}}/v1/profile",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "profile"]
+            },
+            "description": "Soft delete the currently authenticated user's profile (data can be recovered). Protected by ProfilePolicy."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin & Authorization",
+      "item": [
+        {
+          "name": "Admin-Only Endpoint",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/admin-only",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "admin-only"]
+            },
+            "description": "Admin-only endpoint protected by RoleMiddleware. Requires 'admin' or 'super_admin' role. Will return 403 Forbidden if user does not have the required role."
           },
           "response": []
         }

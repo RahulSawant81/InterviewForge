@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\ResumeController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -17,9 +18,21 @@ Route::prefix('v1')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
 
         // Profile CRUD for the currently authenticated user.
-        Route::get('/profile', [ProfileController::class, 'show']);
-        Route::patch('/profile', [ProfileController::class, 'update']);
-        Route::delete('/profile', [ProfileController::class, 'destroy']);
+        Route::prefix('profile')->group(function () {
+            Route::get('/', [ProfileController::class, 'show']);
+            Route::patch('/', [ProfileController::class, 'update']);
+            Route::delete('/', [ProfileController::class, 'destroy']);
+        });
+
+        Route::prefix('resumes')->group(function () {
+            Route::get('/', [ResumeController::class, 'index']);
+            Route::post('/', [ResumeController::class, 'store']);
+            Route::get('/{resume}', [ResumeController::class, 'show']);
+            Route::delete('/{resume}', [ResumeController::class, 'destroy']);
+            Route::get('/{resume}/download', [ResumeController::class, 'download']);
+        });
+
+
 
         // Admin-only route example using role middleware.
         Route::get('/admin-only', function () {
