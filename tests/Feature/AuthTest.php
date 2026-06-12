@@ -21,10 +21,15 @@ class AuthTest extends TestCase
         ]);
 
         $response->assertCreated()
-            ->assertJsonPath('data.email', 'rahul@example.com');
+            ->assertJsonPath('data.email', 'rahul@example.com')
+            ->assertJsonPath('data.role', 'user');
 
         $this->assertDatabaseHas('users', [
             'email' => 'rahul@example.com',
+        ]);
+
+        $this->assertDatabaseHas('roles', [
+            'name' => 'user',
         ]);
 
         $this->assertDatabaseHas('profiles', [
@@ -59,10 +64,12 @@ class AuthTest extends TestCase
                         'name',
                         'email',
                         'role',
+                        'permissions',
                         'profile',
                     ],
                 ],
             ])
+            ->assertJsonPath('data.user.role', 'user')
             ->assertJsonPath('data.user.profile.headline', 'Laravel Developer');
     }
 
@@ -80,6 +87,7 @@ class AuthTest extends TestCase
 
         $response->assertOk()
             ->assertJsonPath('data.email', $user->email)
+            ->assertJsonPath('data.role', 'user')
             ->assertJsonPath('data.profile.headline', 'API Engineer');
     }
 }

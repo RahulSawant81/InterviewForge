@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Enum;
+
+enum UserStatus: int
+{
+    case ACTIVE = 1;
+    case INACTIVE = 0;
+    case SUSPENDED = 2;
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::ACTIVE => 'Active',
+            self::INACTIVE => 'Inactive',
+            self::SUSPENDED => 'Suspended',
+        };
+    }
+}
+
