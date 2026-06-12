@@ -18,5 +18,12 @@ Route::prefix('v1')->group(function () {
         Route::get('/profile', [ProfileController::class, 'show']);
         Route::patch('/profile', [ProfileController::class, 'update']);
         Route::delete('/profile', [ProfileController::class, 'destroy']);
+
+        // Admin-only route example using role middleware.
+        Route::get('/admin-only', function () {
+            return response()->json([
+                'message' => 'Admin access granted.',
+            ]);
+        })->middleware('role:admin|super_admin');
     });
 });
