@@ -65,9 +65,23 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function hasRole(string $roleName): bool
+    public function hasRole(string|array $roles): bool
     {
-        return $this->role?->name === $roleName;
+        if (is_string($roles)) {
+            $roles = explode('|', $roles);
+        }
+
+        return in_array($this->role?->name, $roles, true);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role?->name === 'admin';
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role?->name === 'super_admin';
     }
 
     public function hasPermission(string $permissionName): bool
