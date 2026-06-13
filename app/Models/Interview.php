@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Interview extends Model
 {
     use HasFactory, SoftDeletes;
-    use softDeletes;
 
     protected $fillable = [
         'user_id',
@@ -41,18 +40,18 @@ class Interview extends Model
         ];
     }
 
-    public function user(): belongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function questions(): hasMany
+    public function questions(): HasMany
     {
         return $this->hasMany(InterviewQuestion::class)
             ->orderBy('sequence');
     }
 
-    public function report(): hasOne
+    public function report(): HasOne
     {
         return $this->hasOne(InterviewReport::class);
     }

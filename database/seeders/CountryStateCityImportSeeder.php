@@ -15,7 +15,9 @@ class CountryStateCityImportSeeder extends Seeder
 
         // Check if file exists
         if (!File::exists($jsonPath)) {
-            dd("File not found: " . $jsonPath);
+            throw new \RuntimeException(
+                "File not found: {$jsonPath}"
+            );
         }
 
         // Read and decode JSON
@@ -24,7 +26,9 @@ class CountryStateCityImportSeeder extends Seeder
 
         // Verify JSON structure
         if (!$countries || !is_array($countries)) {
-            dd("Invalid JSON structure.");
+            throw new \RuntimeException(
+                'Invalid JSON structure.'
+            );
         }
 
         // Clear existing data
@@ -63,6 +67,8 @@ class CountryStateCityImportSeeder extends Seeder
             }
         }
 
-        echo "✅ Countries, states, and cities imported successfully!";
+        $this->command?->info(
+            'Countries, states and cities imported successfully.'
+        );
     }
 }

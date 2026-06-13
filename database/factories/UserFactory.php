@@ -18,8 +18,6 @@ class UserFactory extends Factory
      */
     protected static ?string $password;
 
-    // protected static ?int $roleId = null;
-
     /**
      * Define the model's default state.
      *
@@ -32,7 +30,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
-            'role_id' => static::$roleId ??= Role::query()->where('name', 'user')->value('id'),
+            'role_id' => Role::query()->where('name', 'user')->value('id'),
             'remember_token' => Str::random(10),
         ];
     }
