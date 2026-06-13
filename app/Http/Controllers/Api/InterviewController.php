@@ -48,4 +48,41 @@ class InterviewController extends Controller
             201
         );
     }
+
+    /**
+     * Display the specified interview.
+     */
+    public function show(Interview $interview): JsonResponse
+    {
+        abort_if(
+            $interview->user_id !== auth()->id(),
+            403,
+            'Unauthorized'
+        );
+
+        return $this->successResponse(
+            new InterviewResource($interview),
+            'Interview fetched successfully'
+        );
+    }
+    /**
+     * Start the specified interview.
+     */
+    public function start(Interview $interview): JsonResponse
+    {
+
+        abort_if(
+            $interview->user_id !== auth()->id(),
+            403,
+            'Unauthorized'
+        );
+
+        $interview = $this->interviewService
+            ->start($interview);
+
+        return $this->successResponse(
+            new InterviewResource($interview),
+            'Interview started successfully'
+        );
+    }
 }
