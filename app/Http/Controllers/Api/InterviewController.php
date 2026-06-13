@@ -9,17 +9,15 @@ use App\Http\Resources\InterviewResource;
 use App\Services\Interview\InterviewService;
 use Illuminate\Http\JsonResponse;
 use App\Traits\ApiResponseTrait;
+use App\Models\Interview;
 
 class InterviewController extends Controller
 {
     use ApiResponseTrait;
 
-    protected InterviewService $interviewService;
-
-    public function __construct(InterviewService $interviewService)
-    {
-        $this->interviewService = $interviewService;
-    }
+    public function __construct(
+        private readonly InterviewService $interviewService
+    ) {}
 
     /**
      * Display a listing of the user's interviews.

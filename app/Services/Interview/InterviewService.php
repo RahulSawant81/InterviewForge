@@ -21,7 +21,7 @@ class InterviewService
             'difficulty' => $data['difficulty'],
             'technologies' => $data['technologies'],
             'total_questions' => $data['total_questions'],
-            'status' => InterviewStatus::DRAFT,
+            'status' => InterviewStatus::DRAFT->value,
         ]);
     }
 
@@ -57,6 +57,9 @@ class InterviewService
             'started_at' => now(),
         ]);
 
-        return $interview->fresh();
+        if ($interview->status === InterviewStatus::STARTED) {
+            return $interview;
+        }
+        throw new \DomainException('Failed to start interview.');
     }
 }
