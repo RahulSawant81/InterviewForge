@@ -62,4 +62,17 @@ class InterviewService
         }
         throw new \DomainException('Failed to start interview.');
     }
+
+    /**
+     * Submit an interview by marking it as completed and storing the completed time.
+     */
+    public function submit(Interview $interview, array $data): Interview
+    {
+        $interview->update([
+            'status' => InterviewStatus::COMPLETED,
+            'completed_at' => now(),
+        ]);
+
+        return $interview;
+    }
 }

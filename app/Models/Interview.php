@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Enum\DifficultyLevel;
-use App\Enum\InterviewStatus;
-use App\Enum\InterviewType;
+use App\Enums\DifficultyLevel;
+use App\Enums\InterviewStatus;
+use App\Enums\InterviewType;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
