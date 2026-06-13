@@ -53,14 +53,11 @@ class InterviewService
     public function start(Interview $interview): Interview
     {
         $interview->update([
-            'status' => InterviewStatus::STARTED,
+            'status' => InterviewStatus::STARTED->value,
             'started_at' => now(),
         ]);
 
-        if ($interview->status === InterviewStatus::STARTED) {
-            return $interview;
-        }
-        throw new \DomainException('Failed to start interview.');
+        return $interview->fresh();
     }
 
     /**
@@ -69,10 +66,10 @@ class InterviewService
     public function submit(Interview $interview, array $data): Interview
     {
         $interview->update([
-            'status' => InterviewStatus::COMPLETED,
+            'status' => InterviewStatus::COMPLETED->value,
             'completed_at' => now(),
         ]);
 
-        return $interview;
+        return $interview->fresh();
     }
 }

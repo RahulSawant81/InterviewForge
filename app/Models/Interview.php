@@ -10,16 +10,18 @@ use App\Enums\InterviewType;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Interview extends Model
 {
+    use HasFactory, SoftDeletes;
     use softDeletes;
 
     protected $fillable = [
         'user_id',
         'title',
         'type',
-        'technology',
+        'technologies',
         'difficulty',
         'status',
         'total_questions',

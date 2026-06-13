@@ -18,7 +18,7 @@ class UserFactory extends Factory
      */
     protected static ?string $password;
 
-    protected static ?int $roleId = null;
+    // protected static ?int $roleId = null;
 
     /**
      * Define the model's default state.

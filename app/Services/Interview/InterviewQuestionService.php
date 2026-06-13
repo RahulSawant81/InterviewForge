@@ -54,19 +54,19 @@ class InterviewQuestionService
             };
 
             $questions = array_merge($questions, $technologQuestions);
-
-            $questions = array_slice($questions, 0, $interview->total_questions);
-
-            foreach ($questions as $index => $question) {
-                InterviewQuestion::create([
-                    'interview_id' => $interview->id,
-                    'question' => $question,
-                    'question_type' => 'text', // This can be extended to support different question types
-                    'sequence' => $index + 1,
-                ]);
-            }
-
         }
+
+        $questions = array_slice($questions, 0, $interview->total_questions);
+
+        foreach ($questions as $index => $question) {
+            InterviewQuestion::create([
+                'interview_id' => $interview->id,
+                'question' => $question,
+                'question_type' => 'text', // This can be extended to support different question types
+                'sequence' => $index + 1,
+            ]);
+        }
+
         return InterviewQuestion::query()
             ->where('interview_id', $interview->id)
             ->orderBy('sequence')
