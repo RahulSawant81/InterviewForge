@@ -4,6 +4,7 @@ namespace App\Services\Resume;
 
 use App\Models\Resume;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -41,7 +42,7 @@ class ResumeService
         ]);
     }
 
-    public function listResumes(User $user)
+    public function listResumes(User $user): Collection
     {
         return Resume::query()
             ->where('user_id', $user->id)

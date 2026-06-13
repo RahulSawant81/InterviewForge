@@ -27,9 +27,11 @@ Route::prefix('v1')->group(function () {
         Route::prefix('resumes')->group(function () {
             Route::get('/', [ResumeController::class, 'index']);
             Route::post('/', [ResumeController::class, 'store']);
+
             Route::get('/{resume}', [ResumeController::class, 'show']);
-            Route::delete('/{resume}', [ResumeController::class, 'destroy']);
             Route::get('/{resume}/download', [ResumeController::class, 'download']);
+
+            Route::delete('/{resume}', [ResumeController::class, 'destroy']);
         });
 
 

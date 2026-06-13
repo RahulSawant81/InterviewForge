@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ResumeUploadRequest;
 use App\Http\Resources\ResumeResource;
 use App\Models\Resume;
+use App\Models\User;
 use App\Services\Resume\ResumeService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
 class ResumeController extends Controller
@@ -20,10 +22,26 @@ class ResumeController extends Controller
         // Inject any necessary services here, e.g. ResumeService.
     }
 
+     /**
+     * List all resumes for the authenticated user.
+     */
+    public function index(): JsonResponse
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        $resumes = $this->resumeService->listResumes($user);
+
+        return $this->successResponse(ResumeResource::collection($resumes), 'Resumes retrieved successfully');
+    }
+
     public function store(ResumeUploadRequest $request): JsonResponse
     {
+        /** @var User $user */
+        $user = auth()->user();
+
         $resume = $this->resumeService->upload(
-            auth()->id(),
+            $user,
             $request->file('resume'),
             $request->input('title')
         );
@@ -31,15 +49,7 @@ class ResumeController extends Controller
         return $this->successResponse(new ResumeResource($resume), 'Resume uploaded successfully', 201);
     }
 
-    /**
-     * List all resumes for the authenticated user.
-     */
-    public function index(): JsonResponse
-    {
-        $resumes = $this->resumeService->listResumes(auth()->id());
 
-        return $this->successResponse(ResumeResource::collection($resumes), 'Resumes retrieved successfully');
-    }
 
     /**
      * Get a specific resume by ID, ensuring it belongs to the authenticated user.
