@@ -38,10 +38,10 @@ Route::prefix('v1')->group(function () {
         Route::prefix('interviews')->group(function () {
             Route::get('/', [InterviewController::class, 'index']);
             Route::post('/', [InterviewController::class, 'store']);
-            Route::get('/{id}', [InterviewController::class, 'show']);
-            Route::post('/{id}/start', [InterviewController::class, 'start']);
-            Route::post('/{id}/submit', [InterviewController::class, 'submit']);
-            Route::get('/{id}/report', [InterviewController::class, 'report']);
+            Route::get('/{interview}', [InterviewController::class, 'show']);
+            Route::post('/{interview}/start', [InterviewController::class, 'start']);
+            Route::post('/{interview}/submit', [InterviewController::class, 'submit']);
+            Route::get('/{interview}/report', [InterviewController::class, 'report']);
             Route::post('/{interview}/generate-questions', [InterviewController::class, 'generateQuestions']);
         });
 

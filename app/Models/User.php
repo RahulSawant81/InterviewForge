@@ -10,7 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-use App\Enum\UserStatus;
+use App\Enums\UserStatus;
 
 class User extends Authenticatable
 {

@@ -2,7 +2,7 @@
 
 namespace App\Services\Auth;
 
-use App\Enum\UserStatus;
+use App\Enums\UserStatus;
 use App\Models\Profile;
 use App\Models\Role;
 use App\Models\User;
