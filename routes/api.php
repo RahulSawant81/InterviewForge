@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ResumeController;
+use App\Http\Controllers\Api\InterviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -34,6 +35,17 @@ Route::prefix('v1')->group(function () {
             Route::delete('/{resume}', [ResumeController::class, 'destroy']);
         });
 
+        Route::prefix('interviews')->group(function () {
+            Route::get('/', [InterviewController::class, 'index']);
+            Route::post('/', [InterviewController::class, 'store']);
+            Route::get('/{interview}', [InterviewController::class, 'show']);
+            Route::post('/{interview}/start', [InterviewController::class, 'start']);
+            Route::post('/{interview}/submit', [InterviewController::class, 'submit']);
+            Route::get('/{interview}/report', [InterviewController::class, 'report']);
+            Route::post('/{interview}/generate-questions', [InterviewController::class, 'generateQuestions']);
+            Route::post('/{interview}/answers', [InterviewController::class, 'submitAnswers']);
+            Route::get('/{interview}/answers', [InterviewController::class, 'getAnswers']);
+        });
 
 
         // Admin-only route example using role middleware.
