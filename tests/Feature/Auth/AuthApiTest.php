@@ -74,7 +74,7 @@ class AuthApiTest extends TestCase
         $response = $this
             ->withHeader(
                 'Authorization',
-                'Bearer '.$token
+                'Bearer ' . $token
             )
             ->postJson('/api/v1/logout');
 

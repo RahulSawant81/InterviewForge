@@ -12,7 +12,8 @@ class InterviewService
     /**
      * Create a new interview for the given user with the provided data.
      */
-    public function create(User $user, array $data): Interview {
+    public function create(User $user, array $data): Interview
+    {
 
         return Interview::create([
             'user_id' => $user->id,

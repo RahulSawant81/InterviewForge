@@ -2,15 +2,17 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Resume;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @mixin Resume
+ */
 class ResumeResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
-     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
@@ -28,9 +30,6 @@ class ResumeResource extends JsonResource
         ];
     }
 
-    /**
-     * Format file size in a human-readable format.
-     */
     private function formatFileSize(int $bytes): string
     {
         if ($bytes >= 1048576) {

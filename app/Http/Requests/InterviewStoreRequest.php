@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
-
 use App\Enums\DifficultyLevel;
 use App\Enums\InterviewType;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
-
 
 class InterviewStoreRequest extends FormRequest
 {

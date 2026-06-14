@@ -2,14 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Database\Factories\InterviewAnswerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class InterviewAnswer extends Model
 {
-    use HasFactory, SoftDeletes;
+    /**
+     * @use HasFactory<InterviewAnswerFactory>
+     */
+    use HasFactory;
+
+    use SoftDeletes;
 
     protected $fillable = [
         'interview_question_id',

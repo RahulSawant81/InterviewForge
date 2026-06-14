@@ -6,6 +6,9 @@ use App\Models\Profile;
 use App\Models\User;
 use App\Policies\ProfilePolicy;
 use App\Policies\UserPolicy;
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,6 +27,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Scramble::configure()
+            ->withDocumentTransformers(function (OpenApi $openApi) {
+                $openApi->secure(SecurityScheme::http('bearer')
+                );
+            });
         Gate::policy(Profile::class, ProfilePolicy::class);
         Gate::policy(User::class, UserPolicy::class);
     }

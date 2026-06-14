@@ -3,17 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Requests\InterviewStoreRequest;
 use App\Http\Requests\InterviewAnswerRequest;
+use App\Http\Requests\InterviewStoreRequest;
 use App\Http\Resources\InterviewAnswerResource;
+use App\Http\Resources\InterviewReportResource;
 use App\Http\Resources\InterviewResource;
-use App\Services\Interview\InterviewService;
-use App\Services\Interview\InterviewQuestionService;
-use App\Services\Interview\InterviewAnswerService;
-use Illuminate\Http\JsonResponse;
-use App\Traits\ApiResponseTrait;
 use App\Models\Interview;
+use App\Services\Interview\InterviewAnswerService;
+use App\Services\Interview\InterviewQuestionService;
+use App\Services\Interview\InterviewReportService;
+use App\Services\Interview\InterviewService;
+use App\Traits\ApiResponseTrait;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class InterviewController extends Controller
 {
@@ -22,7 +24,8 @@ class InterviewController extends Controller
     public function __construct(
         private readonly InterviewService $interviewService,
         private readonly InterviewQuestionService $questionService,
-        private readonly InterviewAnswerService $answerService
+        private readonly InterviewAnswerService $answerService,
+        private readonly InterviewReportService $reportService
     ) {}
 
     /**
@@ -37,7 +40,6 @@ class InterviewController extends Controller
             'Interviews retrieved successfully.'
         );
     }
-
 
     /**
      * Store a newly created interview in storage.
@@ -69,6 +71,7 @@ class InterviewController extends Controller
             'Interview fetched successfully'
         );
     }
+
     /**
      * Start the specified interview.
      */
@@ -113,28 +116,28 @@ class InterviewController extends Controller
     /**
      * Get the report for the specified interview.
      */
-    public function report(Interview $interview): JsonResponse
-    {
-        abort_if(
-            $interview->user_id !== auth()->id(),
-            403,
-            'Unauthorized'
-        );
+    // public function report(Interview $interview): JsonResponse
+    // {
+    //     abort_if(
+    //         $interview->user_id !== auth()->id(),
+    //         403,
+    //         'Unauthorized'
+    //     );
 
-        $report = $interview->report;
+    //     $report = $interview->report;
 
-        if (!$report) {
-            return $this->errorResponse(
-                'Interview report not found',
-                404
-            );
-        }
+    //     if (!$report) {
+    //         return $this->errorResponse(
+    //             'Interview report not found',
+    //             404
+    //         );
+    //     }
 
-        return $this->successResponse(
-            $report,
-            'Interview report retrieved successfully'
-        );
-    }
+    //     return $this->successResponse(
+    //         $report,
+    //         'Interview report retrieved successfully'
+    //     );
+    // }
 
     public function generateQuestions(Interview $interview): JsonResponse
     {
@@ -182,6 +185,28 @@ class InterviewController extends Controller
         return $this->successResponse(
             InterviewAnswerResource::collection($answers),
             'Answers retrieved successfully'
+        );
+    }
+
+    public function report(Interview $interview): JsonResponse
+    {
+        abort_if(
+            $interview->user_id !== auth()->id(),
+            403,
+            'Unauthorized'
+        );
+
+        $report = $this->reportService
+            ->getReport($interview);
+
+        if (! $report) {
+            $report = $this->reportService
+                ->generateReport($interview);
+        }
+
+        return $this->successResponse(
+            new InterviewReportResource($report),
+            'Interview report retrieved successfully'
         );
     }
 }

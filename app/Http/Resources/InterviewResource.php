@@ -2,9 +2,13 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Interview;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin Interview
+ */
 class InterviewResource extends JsonResource
 {
     /**
@@ -20,20 +24,20 @@ class InterviewResource extends JsonResource
             'title' => $this->title,
 
             'type' => [
-                'value' => $this->type?->value,
-                'name' => ucfirst($this->type?->value),
+                'value' => $this->type->value,
+                'name' => ucfirst($this->type->value),
             ],
 
             'difficulty' => [
-                'value' => $this->difficulty?->value,
-                'name' => ucfirst($this->difficulty?->value),
+                'value' => $this->difficulty->value,
+                'name' => ucfirst($this->difficulty->value),
             ],
 
             'technologies' => $this->technologies,
 
             'status' => [
-                'value' => $this->status?->value,
-                'name' => ucfirst($this->status?->value),
+                'value' => $this->status->value,
+                'name' => ucfirst($this->status->value),
             ],
 
             'total_questions' => $this->total_questions,

@@ -12,17 +12,16 @@ use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-
 class ResumeController extends Controller
 {
     use ApiResponseTrait;
 
-    public function __construct( private readonly ResumeService $resumeService)
+    public function __construct(private readonly ResumeService $resumeService)
     {
         // Inject any necessary services here, e.g. ResumeService.
     }
 
-     /**
+    /**
      * List all resumes for the authenticated user.
      */
     public function index(): JsonResponse
@@ -48,8 +47,6 @@ class ResumeController extends Controller
 
         return $this->successResponse(new ResumeResource($resume), 'Resume uploaded successfully', 201);
     }
-
-
 
     /**
      * Get a specific resume by ID, ensuring it belongs to the authenticated user.

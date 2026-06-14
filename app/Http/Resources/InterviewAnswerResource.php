@@ -2,9 +2,13 @@
 
 namespace App\Http\Resources;
 
+use App\Models\InterviewAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin InterviewAnswer
+ */
 class InterviewAnswerResource extends JsonResource
 {
     /**
@@ -19,7 +23,7 @@ class InterviewAnswerResource extends JsonResource
             'question_id' => $this->interview_question_id,
             'question' => $this->whenLoaded(
                 'question',
-                fn () => $this->question?->question
+                fn () => $this->resource->question?->question
             ),
             'answer' => $this->answer,
             'score' => $this->score,

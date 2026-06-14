@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\InterviewController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ResumeController;
-use App\Http\Controllers\Api\InterviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -21,7 +21,8 @@ Route::prefix('v1')->group(function () {
         // Profile CRUD for the currently authenticated user.
         Route::prefix('profile')->group(function () {
             Route::get('/', [ProfileController::class, 'show']);
-            Route::patch('/', [ProfileController::class, 'update']);
+            // Route::patch('/', [ProfileController::class, 'update']);
+            Route::post('/', [ProfileController::class, 'update']);
             Route::delete('/', [ProfileController::class, 'destroy']);
         });
 
@@ -46,7 +47,6 @@ Route::prefix('v1')->group(function () {
             Route::post('/{interview}/answers', [InterviewController::class, 'submitAnswers']);
             Route::get('/{interview}/answers', [InterviewController::class, 'getAnswers']);
         });
-
 
         // Admin-only route example using role middleware.
         Route::get('/admin-only', function () {

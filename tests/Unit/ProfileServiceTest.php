@@ -4,9 +4,6 @@ namespace Tests\Unit;
 
 use App\Models\Profile;
 use App\Models\User;
-use App\Models\Country;
-use App\Models\State;
-use App\Models\City;
 use App\Services\Profile\ProfileService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

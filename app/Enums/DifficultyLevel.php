@@ -8,7 +8,6 @@ enum DifficultyLevel: string
     case INTERMEDIATE = 'intermediate';
     case ADVANCED = 'advanced';
 
-
     public function label(): string
     {
         return match ($this) {

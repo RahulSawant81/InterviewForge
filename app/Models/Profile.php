@@ -8,10 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property-read Country|null $country
+ * @property-read State|null $state
+ * @property-read City|null $city
+ */
 class Profile extends Model
 {
     /** @use HasFactory<ProfileFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+
+    use SoftDeletes;
 
     protected $fillable = [
         'user_id',

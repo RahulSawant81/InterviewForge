@@ -15,6 +15,7 @@ class InterviewAnswerServiceTest extends TestCase
 
     public function test_submit_single_answer(): void
     {
+        /** @var InterviewQuestion $question */
         $question = InterviewQuestion::factory()->create();
 
         $service = app(
@@ -41,12 +42,15 @@ class InterviewAnswerServiceTest extends TestCase
 
     public function test_submit_bulk_answers(): void
     {
+        /** @var Interview $interview */
         $interview = Interview::factory()->create();
 
+        /** @var InterviewQuestion $question1 */
         $question1 = InterviewQuestion::factory()->create([
             'interview_id' => $interview->id,
         ]);
 
+        /** @var InterviewQuestion $question2 */
         $question2 = InterviewQuestion::factory()->create([
             'interview_id' => $interview->id,
         ]);
@@ -82,8 +86,10 @@ class InterviewAnswerServiceTest extends TestCase
 
     public function test_get_answers_returns_interview_answers(): void
     {
+        /** @var Interview $interview */
         $interview = Interview::factory()->create();
 
+        /** @var InterviewQuestion $question */
         $question = InterviewQuestion::factory()->create([
             'interview_id' => $interview->id,
         ]);
@@ -108,6 +114,7 @@ class InterviewAnswerServiceTest extends TestCase
 
     public function test_submit_answer_updates_existing_answer(): void
     {
+        /** @var InterviewQuestion $question */
         $question = InterviewQuestion::factory()->create();
 
         $service = app(

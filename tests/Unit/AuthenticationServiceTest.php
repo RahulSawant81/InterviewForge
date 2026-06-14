@@ -16,7 +16,7 @@ class AuthenticationServiceTest extends TestCase
 
     public function test_register_creates_user(): void
     {
-       $service = app(AuthenticationService::class);
+        $service = app(AuthenticationService::class);
 
         $user = $service->register([
             'name' => 'Rahul',
@@ -104,7 +104,7 @@ class AuthenticationServiceTest extends TestCase
             'created_at' => now(),
         ]);
 
-        $service = new AuthenticationService();
+        $service = new AuthenticationService;
         $result = $service->resetPasswordWithToken($user->email, $token, 'new-password-123');
 
         $this->assertTrue($result);
@@ -130,7 +130,7 @@ class AuthenticationServiceTest extends TestCase
             'created_at' => $createdAt,
         ]);
 
-        $service = new AuthenticationService();
+        $service = new AuthenticationService;
         $result = $service->resetPasswordWithToken($user->email, $token, 'new-password-123');
 
         $this->assertFalse($result);
@@ -149,7 +149,7 @@ class AuthenticationServiceTest extends TestCase
             'created_at' => now(),
         ]);
 
-        $service = new AuthenticationService();
+        $service = new AuthenticationService;
         $result = $service->resetPasswordWithToken($user->email, 'wrong-token', 'new-password-123');
 
         $this->assertFalse($result);
