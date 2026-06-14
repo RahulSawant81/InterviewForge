@@ -3,14 +3,14 @@
 namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Interview;
-use App\Models\User;
 use App\Services\Interview\InterviewQuestionService;
 
 class InterviewQuestionServiceTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_generate_questions_for_interview(): void
     {
         $interview = Interview::factory()->create([

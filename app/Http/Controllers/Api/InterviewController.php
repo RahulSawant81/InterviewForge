@@ -131,7 +131,7 @@ class InterviewController extends Controller
         );
     }
 
-    public function generateQuestions(Interview $interview, InterviewQuestionService $questionService): JsonResponse
+    public function generateQuestions(Interview $interview): JsonResponse
     {
         abort_if(
             $interview->user_id !== auth()->id(),
@@ -139,9 +139,7 @@ class InterviewController extends Controller
             'Unauthorized'
         );
 
-        $questions = $questionService->generate(
-            $interview
-        );
+        $questions = $this->questionService->generateQuestions($interview);
 
         return $this->successResponse(
             $questions,
