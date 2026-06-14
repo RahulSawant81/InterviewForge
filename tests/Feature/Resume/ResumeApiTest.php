@@ -18,6 +18,7 @@ class ResumeApiTest extends TestCase
     {
         Storage::fake('public');
 
+        /** @var User $user */
         $user = User::factory()->create();
 
         Sanctum::actingAs($user);
@@ -46,6 +47,7 @@ class ResumeApiTest extends TestCase
 
     public function test_authenticated_user_can_list_resumes(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         Resume::factory()
@@ -65,8 +67,10 @@ class ResumeApiTest extends TestCase
 
     public function test_authenticated_user_can_view_resume(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
+        /** @var Resume $resume */
         $resume = Resume::factory()->create([
             'user_id' => $user->id,
         ]);
@@ -87,8 +91,10 @@ class ResumeApiTest extends TestCase
 
     public function test_authenticated_user_can_delete_resume(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
+        /** @var Resume $resume */
         $resume = Resume::factory()->create([
             'user_id' => $user->id,
         ]);

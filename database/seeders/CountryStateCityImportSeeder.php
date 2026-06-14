@@ -14,7 +14,7 @@ class CountryStateCityImportSeeder extends Seeder
         $jsonPath = storage_path('app/public/countries-states-cities.json');
 
         // Check if file exists
-        if (!File::exists($jsonPath)) {
+        if (! File::exists($jsonPath)) {
             throw new \RuntimeException(
                 "File not found: {$jsonPath}"
             );
@@ -25,7 +25,7 @@ class CountryStateCityImportSeeder extends Seeder
         $countries = json_decode($json, true);
 
         // Verify JSON structure
-        if (!$countries || !is_array($countries)) {
+        if (! $countries || ! is_array($countries)) {
             throw new \RuntimeException(
                 'Invalid JSON structure.'
             );
@@ -38,7 +38,6 @@ class CountryStateCityImportSeeder extends Seeder
         DB::table('countries')->delete();
         DB::table('states')->delete();
         DB::table('cities')->delete();
-
 
         foreach ($countries as $country) {
             $country_id = DB::table('countries')->insertGetId([

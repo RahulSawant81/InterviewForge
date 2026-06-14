@@ -31,6 +31,7 @@ class InterviewQuestionService
         // For now, return empty collection - to be implemented with actual question database
 
         $questions = [];
+
         foreach ($interview->technologies as $technology) {
             $technologQuestions = match (strtolower($technology)) {
                 'php' => [

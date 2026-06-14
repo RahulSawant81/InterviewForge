@@ -25,6 +25,7 @@ class ProfileService
 
     public function updateProfile(Profile $profile, array $data): Profile
     {
+
         $profile->fill(Arr::except($data, ['profile_image']));
 
         if (($data['profile_image'] ?? null) instanceof UploadedFile) {

@@ -2,10 +2,14 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @mixin Profile
+ */
 class ProfileResource extends JsonResource
 {
     /**
@@ -19,7 +23,6 @@ class ProfileResource extends JsonResource
             'id' => $this->id,
             'profile_image' => $this->profile_image,
             'profile_image_url' => $this->profile_image ? Storage::url($this->profile_image) : null,
-            'phone' => $this->phone,
             'country_id' => $this->country_id,
             'country' => $this->country?->name,
             'state_id' => $this->state_id,

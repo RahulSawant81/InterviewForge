@@ -21,7 +21,6 @@ class ProfileFactory extends Factory
 
         $city = City::query()->inRandomOrder()->with(['state', 'country'])->first();
 
-
         return [
             'user_id' => User::factory(),
 
@@ -34,9 +33,9 @@ class ProfileFactory extends Factory
             'current_company' => fake()->company(),
             'current_ctc' => fake()->randomFloat(2, 3, 25),
             'expected_ctc' => fake()->randomFloat(2, 5, 30),
-            'linkedin_url' => 'https://www.linkedin.com/in/'.$username,
-            'github_url' => 'https://github.com/'.$username,
-            'portfolio_url' => 'https://'.fake()->domainName(),
+            'linkedin_url' => 'https://www.linkedin.com/in/' . $username,
+            'github_url' => 'https://github.com/' . $username,
+            'portfolio_url' => 'https://' . fake()->domainName(),
             'bio' => fake()->paragraph(),
         ];
     }

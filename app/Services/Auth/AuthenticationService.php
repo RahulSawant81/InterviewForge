@@ -37,7 +37,7 @@ class AuthenticationService
 
             return $user->load([
                 'profile',
-                'role.permissions'
+                'role.permissions',
             ]);
         });
     }
@@ -139,5 +139,4 @@ class AuthenticationService
 
         return true;
     }
-
 }

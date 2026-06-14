@@ -2,19 +2,29 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Enums\DifficultyLevel;
 use App\Enums\InterviewStatus;
 use App\Enums\InterviewType;
+use Database\Factories\InterviewFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property InterviewType $type
+ * @property DifficultyLevel $difficulty
+ * @property InterviewStatus $status
+ * @property array<int, string> $technologies
+ */
 class Interview extends Model
 {
-    use HasFactory, SoftDeletes;
+    /** @use HasFactory<InterviewFactory> */
+    use HasFactory;
+
+    use SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -25,7 +35,7 @@ class Interview extends Model
         'status',
         'total_questions',
         'started_at',
-        'completed_at'
+        'completed_at',
     ];
 
     protected function casts(): array
@@ -55,5 +65,4 @@ class Interview extends Model
     {
         return $this->hasOne(InterviewReport::class);
     }
-
 }

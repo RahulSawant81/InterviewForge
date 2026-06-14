@@ -17,6 +17,7 @@ class InterviewServiceTest extends TestCase
 
     public function test_create_interview(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         $service = app(InterviewService::class);
@@ -42,6 +43,7 @@ class InterviewServiceTest extends TestCase
 
     public function test_list_interviews_returns_user_interviews(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
         Interview::factory()
@@ -62,8 +64,10 @@ class InterviewServiceTest extends TestCase
 
     public function test_find_interview_by_id(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
+        /** @var Interview $interview */
         $interview = Interview::factory()->create([
             'user_id' => $user->id,
         ]);
@@ -83,6 +87,7 @@ class InterviewServiceTest extends TestCase
 
     public function test_start_interview(): void
     {
+        /** @var Interview $interview */
         $interview = Interview::factory()->create([
             'status' => InterviewStatus::DRAFT,
         ]);
@@ -105,6 +110,7 @@ class InterviewServiceTest extends TestCase
 
     public function test_submit_interview(): void
     {
+        /** @var Interview $interview */
         $interview = Interview::factory()->create([
             'status' => InterviewStatus::STARTED,
         ]);

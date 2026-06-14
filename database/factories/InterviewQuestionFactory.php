@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class InterviewQuestionFactory extends Factory
 {
     protected $model = InterviewQuestion::class;
+
     /**
      * Define the model's default state.
      *

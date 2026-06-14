@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use App\Models\Interview;
 use App\Services\Interview\InterviewQuestionService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class InterviewQuestionServiceTest extends TestCase
 {
@@ -13,6 +13,7 @@ class InterviewQuestionServiceTest extends TestCase
 
     public function test_generate_questions_for_interview(): void
     {
+        /** @var Interview $interview */
         $interview = Interview::factory()->create([
             'technologies' => [
                 'PHP',
@@ -42,6 +43,7 @@ class InterviewQuestionServiceTest extends TestCase
 
     public function test_questions_have_sequence_numbers(): void
     {
+        /** @var Interview $interview */
         $interview = Interview::factory()->create([
             'technologies' => ['PHP'],
             'total_questions' => 3,
@@ -73,6 +75,7 @@ class InterviewQuestionServiceTest extends TestCase
 
     public function test_unknown_technology_generates_fallback_question(): void
     {
+        /** @var Interview $interview */
         $interview = Interview::factory()->create([
             'technologies' => ['Python'],
             'total_questions' => 1,

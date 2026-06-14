@@ -16,12 +16,15 @@ class InterviewAnswerApiTest extends TestCase
 
     public function test_authenticated_user_can_submit_answers(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
+        /** @var Interview $interview */
         $interview = Interview::factory()->create([
             'user_id' => $user->id,
         ]);
 
+        /** @var InterviewQuestion $question */
         $question = InterviewQuestion::factory()->create([
             'interview_id' => $interview->id,
         ]);
@@ -57,12 +60,15 @@ class InterviewAnswerApiTest extends TestCase
 
     public function test_authenticated_user_can_view_answers(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
+        /** @var Interview $interview */
         $interview = Interview::factory()->create([
             'user_id' => $user->id,
         ]);
 
+        /** @var InterviewQuestion $question */
         $question = InterviewQuestion::factory()->create([
             'interview_id' => $interview->id,
         ]);
@@ -82,6 +88,7 @@ class InterviewAnswerApiTest extends TestCase
 
     public function test_guest_cannot_access_answers(): void
     {
+        /** @var Interview $interview */
         $interview = Interview::factory()->create();
 
         $response = $this->getJson(
@@ -93,9 +100,13 @@ class InterviewAnswerApiTest extends TestCase
 
     public function test_user_cannot_access_another_users_answers(): void
     {
+        /** @var User $owner */
         $owner = User::factory()->create();
+
+        /** @var User $otherUser */
         $otherUser = User::factory()->create();
 
+        /** @var Interview $interview */
         $interview = Interview::factory()->create([
             'user_id' => $owner->id,
         ]);
@@ -111,8 +122,10 @@ class InterviewAnswerApiTest extends TestCase
 
     public function test_validation_fails_for_invalid_answers_payload(): void
     {
+        /** @var User $user */
         $user = User::factory()->create();
 
+        /** @var Interview $interview */
         $interview = Interview::factory()->create([
             'user_id' => $user->id,
         ]);
