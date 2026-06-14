@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\InterviewStoreRequest;
+use App\Http\Requests\InterviewAnswerRequest;
+use App\Http\Resources\InterviewAnswerResource;
 use App\Http\Resources\InterviewResource;
 use App\Services\Interview\InterviewService;
 use App\Services\Interview\InterviewQuestionService;
+use App\Services\Interview\InterviewAnswerService;
 use Illuminate\Http\JsonResponse;
 use App\Traits\ApiResponseTrait;
 use App\Models\Interview;
@@ -18,7 +21,8 @@ class InterviewController extends Controller
 
     public function __construct(
         private readonly InterviewService $interviewService,
-        private readonly InterviewQuestionService $questionService
+        private readonly InterviewQuestionService $questionService,
+        private readonly InterviewAnswerService $answerService
     ) {}
 
     /**
@@ -87,7 +91,8 @@ class InterviewController extends Controller
     }
 
     /**
-     * Submit the specified interview with answers.
+     * Complete the interview after all answers
+     * have been submitted.
      */
     public function submit(Interview $interview, Request $request): JsonResponse
     {
@@ -144,6 +149,39 @@ class InterviewController extends Controller
         return $this->successResponse(
             $questions,
             'Questions generated successfully'
+        );
+    }
+
+    public function submitAnswers(Interview $interview, InterviewAnswerRequest $request): JsonResponse
+    {
+        abort_if(
+            $interview->user_id !== auth()->id(),
+            403,
+            'Unauthorized'
+        );
+
+        $answers = $this->answerService->submitBulkAnswers($interview, $request->validated()['answers']);
+
+        return $this->successResponse(
+            InterviewAnswerResource::collection($answers),
+            'Answers submitted successfully'
+        );
+
+    }
+
+    public function getAnswers(Interview $interview): JsonResponse
+    {
+        abort_if(
+            $interview->user_id !== auth()->id(),
+            403,
+            'Unauthorized'
+        );
+
+        $answers = $this->answerService->getAnswers($interview);
+
+        return $this->successResponse(
+            InterviewAnswerResource::collection($answers),
+            'Answers retrieved successfully'
         );
     }
 }

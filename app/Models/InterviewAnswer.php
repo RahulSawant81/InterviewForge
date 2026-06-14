@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InterviewAnswer extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'interview_question_id',
@@ -24,11 +25,8 @@ class InterviewAnswer extends Model
         ];
     }
 
-    public function question(): belongsTo
+    public function question(): BelongsTo
     {
-        return $this->belongsTo(
-            InterviewQuestion::class,
-            'interview_question_id'
-        );
+        return $this->belongsTo(InterviewQuestion::class, 'interview_question_id');
     }
 }

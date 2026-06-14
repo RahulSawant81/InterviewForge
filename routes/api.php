@@ -43,6 +43,8 @@ Route::prefix('v1')->group(function () {
             Route::post('/{interview}/submit', [InterviewController::class, 'submit']);
             Route::get('/{interview}/report', [InterviewController::class, 'report']);
             Route::post('/{interview}/generate-questions', [InterviewController::class, 'generateQuestions']);
+            Route::post('/{interview}/answers', [InterviewController::class, 'submitAnswers']);
+            Route::get('/{interview}/answers', [InterviewController::class, 'getAnswers']);
         });
 
 
