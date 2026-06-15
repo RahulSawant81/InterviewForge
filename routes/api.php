@@ -48,6 +48,8 @@ Route::prefix('v1')->group(function () {
             Route::get('/{interview}/answers', [InterviewController::class, 'getAnswers']);
         });
 
+        Route::apiResource('questions', QuestionController::class);
+
         // Admin-only route example using role middleware.
         Route::get('/admin-only', function () {
             return response()->json([
