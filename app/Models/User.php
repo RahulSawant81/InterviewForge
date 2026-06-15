@@ -19,9 +19,9 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasApiTokens;
 
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
     use Notifiable;
 
@@ -63,16 +63,25 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * @return HasOne<Profile, $this>
+     */
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);
     }
 
+    /**
+     * @return BelongsTo<Role, $this>
+     */
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
 
+    /**
+     * @param string|array<int, string> $roles
+     */
     public function hasRole(string|array $roles): bool
     {
         if (is_string($roles)) {
@@ -97,6 +106,9 @@ class User extends Authenticatable
         return $this->role?->permissions->contains('name', $permissionName) ?? false;
     }
 
+    /**
+     * @return BelongsToMany<Skill, $this>
+     */
     public function skills(): BelongsToMany
     {
         return $this->belongsToMany(Skill::class, 'user_skills');

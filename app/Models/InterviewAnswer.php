@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property-read InterviewQuestion|null $question
+ */
 class InterviewAnswer extends Model
 {
     /**
@@ -31,6 +34,9 @@ class InterviewAnswer extends Model
         ];
     }
 
+    /**
+     * @return BelongsTo<InterviewQuestion, $this>
+     */
     public function question(): BelongsTo
     {
         return $this->belongsTo(InterviewQuestion::class, 'interview_question_id');

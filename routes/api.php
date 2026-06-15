@@ -21,8 +21,8 @@ Route::prefix('v1')->group(function () {
         // Profile CRUD for the currently authenticated user.
         Route::prefix('profile')->group(function () {
             Route::get('/', [ProfileController::class, 'show']);
-            // Route::patch('/', [ProfileController::class, 'update']);
-            Route::post('/', [ProfileController::class, 'update']);
+            Route::patch('/', [ProfileController::class, 'update']);
+            // Route::post('/', [ProfileController::class, 'update']);
             Route::delete('/', [ProfileController::class, 'destroy']);
         });
 

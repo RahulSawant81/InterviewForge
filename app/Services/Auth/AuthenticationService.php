@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthenticationService
 {
     /**
-     * Handle user registration.
+     * @param array<string, mixed> $data
      */
     public function register(array $data): User
     {
@@ -29,6 +29,7 @@ class AuthenticationService
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
                 'role_id' => $defaultRoleId,
+                'status' => UserStatus::ACTIVE->value,
             ]);
 
             Profile::create([
@@ -43,9 +44,9 @@ class AuthenticationService
     }
 
     /**
-     * Handle user login.
+     * @param array<string, mixed> $data
      *
-     * @return array{user: User, token: string}|null
+     * @return array<string, mixed>
      */
     public function login(array $data): ?array
     {

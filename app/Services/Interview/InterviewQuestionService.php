@@ -17,19 +17,13 @@ class InterviewQuestionService
     }
 
     /**
-     * Generate and assign questions to an interview based on type, difficulty, and technologies.
+     * Generate and assign questions to an interview.
+     *
+     * @return Collection<int, InterviewQuestion>
      */
     public function generateQuestions(Interview $interview): Collection
     {
-        // This is a placeholder implementation.
-        // In a real scenario, this would:
-        // 1. Query questions from a database based on type, difficulty, and technologies
-        // 2. Randomly select the required number of questions
-        // 3. Assign them sequences
-        // 4. Create InterviewQuestion records
-        // 5. Return the created questions
-        // For now, return empty collection - to be implemented with actual question database
-
+        /** @var array<int, string> $questions */
         $questions = [];
 
         foreach ($interview->technologies as $technology) {
