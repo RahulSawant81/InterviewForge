@@ -6,6 +6,7 @@ use App\Enums\DifficultyLevel;
 use App\Enums\InterviewStatus;
 use App\Enums\InterviewType;
 use Database\Factories\InterviewFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +19,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property DifficultyLevel $difficulty
  * @property InterviewStatus $status
  * @property array<int, string> $technologies
+ * @property-read User $user
+ * @property-read Collection<int, InterviewQuestion> $questions
+ * @property-read InterviewReport|null $report
  */
 class Interview extends Model
 {
@@ -50,17 +54,26 @@ class Interview extends Model
         ];
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return HasMany<InterviewQuestion, $this>
+     */
     public function questions(): HasMany
     {
         return $this->hasMany(InterviewQuestion::class)
             ->orderBy('sequence');
     }
 
+    /**
+     * @return HasOne<InterviewReport, $this>
+     */
     public function report(): HasOne
     {
         return $this->hasOne(InterviewReport::class);

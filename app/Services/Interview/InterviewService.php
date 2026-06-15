@@ -11,6 +11,9 @@ class InterviewService
 {
     /**
      * Create a new interview for the given user with the provided data.
+     *
+     *
+     * @param array<string, mixed> $data
      */
     public function create(User $user, array $data): Interview
     {
@@ -28,6 +31,8 @@ class InterviewService
 
     /**
      * Get a paginated list of interviews for the given user.
+     *
+     * @return LengthAwarePaginator<int, Interview>
      */
     public function list(User $user): LengthAwarePaginator
     {
@@ -63,6 +68,8 @@ class InterviewService
 
     /**
      * Submit an interview by marking it as completed and storing the completed time.
+     *
+     * @param array<string, mixed> $data
      */
     public function submit(Interview $interview, array $data): Interview
     {

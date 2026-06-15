@@ -40,6 +40,9 @@ class ResumeService
         ]);
     }
 
+    /**
+     * @return Collection<int, Resume>
+     */
     public function listResumes(User $user): Collection
     {
         return Resume::query()

@@ -35,6 +35,9 @@ class InterviewReport extends Model
         ];
     }
 
+    /**
+     * @return BelongsTo<Interview, $this>
+     */
     public function interview(): BelongsTo
     {
         return $this->belongsTo(Interview::class);
