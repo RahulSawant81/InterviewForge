@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\InterviewController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ResumeController;
+use App\Http\Controllers\Api\QuestionController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -47,8 +49,9 @@ Route::prefix('v1')->group(function () {
             Route::post('/{interview}/answers', [InterviewController::class, 'submitAnswers']);
             Route::get('/{interview}/answers', [InterviewController::class, 'getAnswers']);
         });
-
         Route::apiResource('questions', QuestionController::class);
+
+
 
         // Admin-only route example using role middleware.
         Route::get('/admin-only', function () {

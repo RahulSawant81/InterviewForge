@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DifficultyLevel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property DifficultyLevel $difficulty
+ * @property array<int, string>|null $options
  */
 class Question extends Model
 {
@@ -30,7 +32,7 @@ class Question extends Model
     ];
 
     /**
-     * @return HasMany<Question, $this>
+     * @return array<string, string>
      */
     protected function casts(): array
     {

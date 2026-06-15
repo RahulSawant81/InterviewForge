@@ -12,7 +12,7 @@ class QuestionService
      *
      * @return LengthAwarePaginator<int, Question>
      */
-    public function list(array $filters): LengthAwarePaginator
+    public function paginate(array $filters): LengthAwarePaginator
     {
         return Question::query()
             ->with([
