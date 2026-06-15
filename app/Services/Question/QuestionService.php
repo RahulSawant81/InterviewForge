@@ -104,4 +104,34 @@ class QuestionService
     {
         $question->delete();
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection<int, Question>
+     */
+    public function getRandomQuestions(
+        string $technology,
+        string $difficulty,
+        int $limit
+    ): \Illuminate\Database\Eloquent\Collection {
+        return Question::query()
+            ->with('category')
+            ->whereHas(
+                'category',
+                fn ($query) => $query->where(
+                    'slug',
+                    strtolower($technology)
+                )
+            )
+            ->where(
+                'difficulty',
+                $difficulty
+            )
+            ->where(
+                'is_active',
+                true
+            )
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+    }
 }
