@@ -59,4 +59,21 @@ class InterviewQuestionService
             ->orderBy('sequence')
             ->get();
     }
+
+
+    /**
+     * @return Collection<int, InterviewQuestion>
+     */
+    public function getQuestions(
+        Interview $interview
+    ): Collection {
+        return InterviewQuestion::query()
+            ->with('answer')
+            ->where(
+                'interview_id',
+                $interview->id
+            )
+            ->orderBy('sequence')
+            ->get();
+    }
 }

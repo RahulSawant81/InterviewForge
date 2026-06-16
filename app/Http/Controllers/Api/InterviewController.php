@@ -8,6 +8,7 @@ use App\Http\Requests\InterviewStoreRequest;
 use App\Http\Resources\InterviewAnswerResource;
 use App\Http\Resources\InterviewReportResource;
 use App\Http\Resources\InterviewResource;
+use App\Http\Resources\InterviewQuestionResource;
 use App\Models\Interview;
 use App\Services\Interview\InterviewAnswerService;
 use App\Services\Interview\InterviewQuestionService;
@@ -207,6 +208,21 @@ class InterviewController extends Controller
         return $this->successResponse(
             new InterviewReportResource($report),
             'Interview report retrieved successfully'
+        );
+    }
+
+    public function questions(Interview $interview): JsonResponse
+    {
+        $questions = $this->questionService
+            ->getQuestions(
+                $interview
+            );
+
+        return $this->successResponse(
+            InterviewQuestionResource::collection(
+                $questions
+            ),
+            'Interview questions fetched successfully.'
         );
     }
 }

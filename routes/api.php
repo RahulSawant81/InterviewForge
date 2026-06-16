@@ -48,6 +48,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/{interview}/generate-questions', [InterviewController::class, 'generateQuestions']);
             Route::post('/{interview}/answers', [InterviewController::class, 'submitAnswers']);
             Route::get('/{interview}/answers', [InterviewController::class, 'getAnswers']);
+            Route::get('/{interview}/questions',[InterviewController::class, 'questions']);
         });
         Route::apiResource('questions', QuestionController::class);
 
