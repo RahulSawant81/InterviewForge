@@ -55,7 +55,7 @@ class InterviewController extends Controller
             new InterviewResource($interview),
             'Interview created successfully.',
             201
-        );
+    );
     }
 
     /**
@@ -110,37 +110,20 @@ class InterviewController extends Controller
 
         $interview = $this->interviewService->submit($interview, $request->all());
 
+        $report = $this->reportService->generateReport($interview);
+
         return $this->successResponse(
-            new InterviewResource($interview),
+            [
+                'interview' => new InterviewResource(
+                    $interview
+                ),
+                'report' => new InterviewReportResource(
+                    $report
+                ),
+            ],
             'Interview submitted successfully'
         );
     }
-
-    /**
-     * Get the report for the specified interview.
-     */
-    // public function report(Interview $interview): JsonResponse
-    // {
-    //     abort_if(
-    //         $interview->user_id !== auth()->id(),
-    //         403,
-    //         'Unauthorized'
-    //     );
-
-    //     $report = $interview->report;
-
-    //     if (!$report) {
-    //         return $this->errorResponse(
-    //             'Interview report not found',
-    //             404
-    //         );
-    //     }
-
-    //     return $this->successResponse(
-    //         $report,
-    //         'Interview report retrieved successfully'
-    //     );
-    // }
 
     public function generateQuestions(Interview $interview): JsonResponse
     {

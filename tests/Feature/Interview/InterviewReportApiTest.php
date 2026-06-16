@@ -100,4 +100,43 @@ class InterviewReportApiTest extends TestCase
 
         $response->assertStatus(403);
     }
+
+    public function test_authenticated_user_can_submit_interview(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->create();
+
+        /** @var Interview $interview */
+        $interview = Interview::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $response = $this->postJson(
+            "/api/v1/interviews/{$interview->id}/submit"
+        );
+
+        $response
+            ->assertStatus(200)
+            ->assertJsonPath(
+                'message',
+                'Interview submitted successfully'
+            );
+
+        $this->assertDatabaseHas(
+            'interview_reports',
+            [
+                'interview_id' => $interview->id,
+            ]
+        );
+
+        $this->assertDatabaseHas(
+            'interviews',
+            [
+                'id' => $interview->id,
+                'status' => \App\Enums\InterviewStatus::COMPLETED->value,
+            ]
+        );
+    }
 }
