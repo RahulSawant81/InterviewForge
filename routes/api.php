@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\InterviewController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ResumeController;
+use App\Http\Controllers\Api\QuestionController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -21,8 +23,8 @@ Route::prefix('v1')->group(function () {
         // Profile CRUD for the currently authenticated user.
         Route::prefix('profile')->group(function () {
             Route::get('/', [ProfileController::class, 'show']);
-            // Route::patch('/', [ProfileController::class, 'update']);
-            Route::post('/', [ProfileController::class, 'update']);
+            Route::patch('/', [ProfileController::class, 'update']);
+            // Route::post('/', [ProfileController::class, 'update']);
             Route::delete('/', [ProfileController::class, 'destroy']);
         });
 
@@ -46,7 +48,12 @@ Route::prefix('v1')->group(function () {
             Route::post('/{interview}/generate-questions', [InterviewController::class, 'generateQuestions']);
             Route::post('/{interview}/answers', [InterviewController::class, 'submitAnswers']);
             Route::get('/{interview}/answers', [InterviewController::class, 'getAnswers']);
+            Route::get('/{interview}/questions',[InterviewController::class, 'questions']);
         });
+        Route::post('/questions/{question}/answer', [InterviewController::class, 'answer']);
+        Route::apiResource('questions', QuestionController::class);
+
+
 
         // Admin-only route example using role middleware.
         Route::get('/admin-only', function () {

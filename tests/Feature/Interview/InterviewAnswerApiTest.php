@@ -139,4 +139,39 @@ class InterviewAnswerApiTest extends TestCase
 
         $response->assertStatus(422);
     }
+
+    public function test_owner_can_only_submit_answers_for_their_interview(): void
+    {
+        /** @var User $owner */
+        $owner = User::factory()->create();
+
+        /** @var User $otherUser */
+        $otherUser = User::factory()->create();
+
+        /** @var Interview $interview */
+        $interview = Interview::factory()->create([
+            'user_id' => $owner->id,
+        ]);
+
+        /** @var InterviewQuestion $question */
+        $question = InterviewQuestion::factory()->create([
+            'interview_id' => $interview->id,
+        ]);
+
+        Sanctum::actingAs($otherUser);
+
+        $response = $this->postJson(
+            "/api/v1/interviews/{$interview->id}/answers",
+            [
+                'answers' => [
+                    [
+                        'question_id' => $question->id,
+                        'answer' => 'Unauthorized answer',
+                    ],
+                ],
+            ]
+        );
+
+        $response->assertStatus(403);
+    }
 }

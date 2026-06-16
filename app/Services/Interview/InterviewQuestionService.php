@@ -5,71 +5,74 @@ namespace App\Services\Interview;
 use App\Models\Interview;
 use App\Models\InterviewQuestion;
 use Illuminate\Support\Collection;
+use App\Services\Question\QuestionService;
 
 class InterviewQuestionService
 {
     /**
      * Create a new class instance.
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(
+        private readonly QuestionService $questionService
+    ) {}
 
     /**
-     * Generate and assign questions to an interview based on type, difficulty, and technologies.
+     * Generate and assign questions to an interview.
+     *
+     * @return Collection<int, InterviewQuestion>
      */
     public function generateQuestions(Interview $interview): Collection
     {
-        // This is a placeholder implementation.
-        // In a real scenario, this would:
-        // 1. Query questions from a database based on type, difficulty, and technologies
-        // 2. Randomly select the required number of questions
-        // 3. Assign them sequences
-        // 4. Create InterviewQuestion records
-        // 5. Return the created questions
-        // For now, return empty collection - to be implemented with actual question database
-
-        $questions = [];
+        /** @var Collection<int, \App\Models\Question> $questions */
+        $questions = collect();
 
         foreach ($interview->technologies as $technology) {
-            $technologQuestions = match (strtolower($technology)) {
-                'php' => [
-                    'What are traits in PHP?',
-                    'Explain oop principles in PHP.',
-                    'Difference between interface class and abstract class',
-                ],
-                'laravel' => [
-                    'Explain the service container in Laravel.',
-                    'What is Eloquent ORM',
-                    'Difference between Sanctum and Passport',
-                ],
-                'mysql' => [
-                    'What is indexing?',
-                    'Difference between INNER JOIN and LEFT JOIN.',
-                    'What is normalization?',
-                ],
-                default => [
-                    "Explain your experience with {$technology}.",
-                ],
-            };
 
-            $questions = array_merge($questions, $technologQuestions);
+            $technologyQuestions = $this->questionService
+                ->getRandomQuestions(
+                    $technology,
+                    $interview->difficulty->value,
+                    $interview->total_questions
+                );
+
+            $questions = $questions->merge(
+                $technologyQuestions
+            );
         }
 
-        $questions = array_slice($questions, 0, $interview->total_questions);
+        $questions = $questions
+            ->shuffle()
+            ->take($interview->total_questions)
+            ->values();
 
         foreach ($questions as $index => $question) {
             InterviewQuestion::create([
                 'interview_id' => $interview->id,
-                'question' => $question,
-                'question_type' => 'text', // This can be extended to support different question types
+                'question' => $question->question,
+                'question_type' => $question->question_type,
                 'sequence' => $index + 1,
             ]);
         }
 
         return InterviewQuestion::query()
             ->where('interview_id', $interview->id)
+            ->orderBy('sequence')
+            ->get();
+    }
+
+
+    /**
+     * @return Collection<int, InterviewQuestion>
+     */
+    public function getQuestions(
+        Interview $interview
+    ): Collection {
+        return InterviewQuestion::query()
+            ->with('answer')
+            ->where(
+                'interview_id',
+                $interview->id
+            )
             ->orderBy('sequence')
             ->get();
     }

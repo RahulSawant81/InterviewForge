@@ -25,11 +25,17 @@ class InterviewQuestion extends Model
         'sequence',
     ];
 
+    /**
+     * @return BelongsTo<Interview, $this>
+     */
     public function interview(): BelongsTo
     {
         return $this->belongsTo(Interview::class);
     }
 
+    /**
+     * @return HasOne<InterviewAnswer, $this>
+     */
     public function answer(): HasOne
     {
         return $this->hasOne(InterviewAnswer::class);

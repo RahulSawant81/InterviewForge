@@ -17,6 +17,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // $this->call(CountryStateCityImportSeeder::class);
+        $this->call([
+            QuestionCategorySeeder::class,
+            TagSeeder::class,
+            QuestionSeeder::class,
+        ]);
 
         $superAdmin = User::factory()->superAdmin()->create([
             'name' => 'Super Admin',

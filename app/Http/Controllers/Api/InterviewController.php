@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InterviewAnswerRequest;
+use App\Http\Requests\InterviewSingleAnswerRequest;
 use App\Http\Requests\InterviewStoreRequest;
 use App\Http\Resources\InterviewAnswerResource;
 use App\Http\Resources\InterviewReportResource;
 use App\Http\Resources\InterviewResource;
+use App\Http\Resources\InterviewQuestionResource;
+use App\Models\InterviewQuestion;
 use App\Models\Interview;
 use App\Services\Interview\InterviewAnswerService;
 use App\Services\Interview\InterviewQuestionService;
@@ -52,7 +55,7 @@ class InterviewController extends Controller
             new InterviewResource($interview),
             'Interview created successfully.',
             201
-        );
+    );
     }
 
     /**
@@ -107,37 +110,20 @@ class InterviewController extends Controller
 
         $interview = $this->interviewService->submit($interview, $request->all());
 
+        $report = $this->reportService->generateReport($interview);
+
         return $this->successResponse(
-            new InterviewResource($interview),
+            [
+                'interview' => new InterviewResource(
+                    $interview
+                ),
+                'report' => new InterviewReportResource(
+                    $report
+                ),
+            ],
             'Interview submitted successfully'
         );
     }
-
-    /**
-     * Get the report for the specified interview.
-     */
-    // public function report(Interview $interview): JsonResponse
-    // {
-    //     abort_if(
-    //         $interview->user_id !== auth()->id(),
-    //         403,
-    //         'Unauthorized'
-    //     );
-
-    //     $report = $interview->report;
-
-    //     if (!$report) {
-    //         return $this->errorResponse(
-    //             'Interview report not found',
-    //             404
-    //         );
-    //     }
-
-    //     return $this->successResponse(
-    //         $report,
-    //         'Interview report retrieved successfully'
-    //     );
-    // }
 
     public function generateQuestions(Interview $interview): JsonResponse
     {
@@ -207,6 +193,41 @@ class InterviewController extends Controller
         return $this->successResponse(
             new InterviewReportResource($report),
             'Interview report retrieved successfully'
+        );
+    }
+
+    public function questions(Interview $interview): JsonResponse
+    {
+        abort_if(
+            $interview->user_id !== auth()->id(),
+            403,
+            'Unauthorized'
+        );
+
+        $questions = $this->questionService
+            ->getQuestions(
+                $interview
+            );
+
+        return $this->successResponse(
+            InterviewQuestionResource::collection(
+                $questions
+            ),
+            'Interview questions fetched successfully.'
+        );
+    }
+
+    public function answer(InterviewSingleAnswerRequest $request, InterviewQuestion $question): JsonResponse
+    {
+        $answer = $this->answerService
+            ->submitAnswer(
+                $question,
+                $request->validated()['answer']
+            );
+
+        return $this->successResponse(
+            $answer,
+            'Answer submitted successfully.'
         );
     }
 }

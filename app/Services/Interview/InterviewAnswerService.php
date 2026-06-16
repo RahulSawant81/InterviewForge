@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class InterviewAnswerService
 {
     /**
-     * Submit or update a single answer.
+     * Submit a single answer.
      */
     public function submitAnswer(InterviewQuestion $question, string $answer): InterviewAnswer
     {
@@ -27,6 +27,13 @@ class InterviewAnswerService
 
     /**
      * Submit multiple answers in one request.
+     *
+     * @param array<int, array{
+     *     question_id:int,
+     *     answer:string
+     * }> $answers
+     *
+     * @return Collection<int, InterviewAnswer>
      */
     public function submitBulkAnswers(Interview $interview, array $answers): Collection
     {
@@ -51,7 +58,7 @@ class InterviewAnswerService
     }
 
     /**
-     * Get all answers for an interview.
+     * @return Collection<int, InterviewAnswer>
      */
     public function getAnswers(Interview $interview): Collection
     {
