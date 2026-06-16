@@ -18,10 +18,12 @@ class InterviewQuestionApiTest extends TestCase
     {
         $user = User::factory()->create();
 
+        /** @var Interview $interview */
         $interview = Interview::factory()->create([
             'user_id' => $user->id,
         ]);
 
+        /** @var InterviewQuestion $interview */
         InterviewQuestion::factory()
             ->count(3)
             ->create([

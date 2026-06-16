@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InterviewAnswerRequest;
+use App\Http\Requests\InterviewSingleAnswerRequest;
 use App\Http\Requests\InterviewStoreRequest;
 use App\Http\Resources\InterviewAnswerResource;
 use App\Http\Resources\InterviewReportResource;
 use App\Http\Resources\InterviewResource;
 use App\Http\Resources\InterviewQuestionResource;
+use App\Models\InterviewQuestion;
 use App\Models\Interview;
 use App\Services\Interview\InterviewAnswerService;
 use App\Services\Interview\InterviewQuestionService;
@@ -213,6 +215,12 @@ class InterviewController extends Controller
 
     public function questions(Interview $interview): JsonResponse
     {
+        abort_if(
+            $interview->user_id !== auth()->id(),
+            403,
+            'Unauthorized'
+        );
+
         $questions = $this->questionService
             ->getQuestions(
                 $interview
@@ -223,6 +231,20 @@ class InterviewController extends Controller
                 $questions
             ),
             'Interview questions fetched successfully.'
+        );
+    }
+
+    public function answer(InterviewSingleAnswerRequest $request, InterviewQuestion $question): JsonResponse
+    {
+        $answer = $this->answerService
+            ->submitAnswer(
+                $question,
+                $request->validated()['answer']
+            );
+
+        return $this->successResponse(
+            $answer,
+            'Answer submitted successfully.'
         );
     }
 }
