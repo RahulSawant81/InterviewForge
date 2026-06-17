@@ -4,42 +4,40 @@ namespace App\Services\Interview;
 
 use App\Models\Interview;
 use App\Models\InterviewReport;
+use App\Services\AI\InterviewEvaluationService;
+
 
 class InterviewReportService
 {
     /**
      * Create a new class instance.
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(
+        private readonly InterviewEvaluationService $evaluationService
+    ) {}
 
     /**
      * Generate a report for an interview.
      */
     public function generateReport(Interview $interview): InterviewReport
     {
+        $evaluation = $this->evaluationService->evaluate($interview);
+
         return InterviewReport::updateOrCreate(
             [
                 'interview_id' => $interview->id,
             ],
             [
-                'overall_score' => 75,
+                'overall_score' => (int) (
+                    $evaluation['overall_score']
+                    ?? 60
+                ),
 
-                'strengths' => [
-                    'Good communication',
-                    'Strong technical knowledge',
-                ],
+                'strengths' => $evaluation['strengths'] ?? [],
 
-                'weaknesses' => [
-                    'Needs more system design practice',
-                ],
+                'weaknesses' => $evaluation['weaknesses'] ?? [],
 
-                'recommendations' => [
-                    'Practice coding challenges',
-                    'Improve SQL optimization skills',
-                ],
+                'recommendations' => $evaluation['recommendations'] ?? [],
             ]
         );
     }

@@ -5,6 +5,10 @@ use App\Http\Controllers\Api\InterviewController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ResumeController;
 use App\Http\Controllers\Api\QuestionController;
+use Gemini\Laravel\Facades\Gemini;
+use App\Services\AI\GeminiService;
+use App\Models\Interview;
+use App\Services\Interview\InterviewReportService;
 
 use Illuminate\Support\Facades\Route;
 
@@ -62,4 +66,45 @@ Route::prefix('v1')->group(function () {
             ]);
         })->middleware('role:admin|super_admin');
     });
+
+
+    Route::get('/gemini-evaluation-test', function (
+        GeminiService $service
+    ) {
+
+        return $service->evaluateInterview(
+            'mock',
+            [
+                'What is Dependency Injection?',
+            ],
+            [
+                'Dependency Injection is a design pattern used to provide dependencies.'
+            ]
+        );
+    });
+
+    Route::get('/gemini-test', function () {
+
+        $response = Gemini::generativeModel(
+            model: 'gemini-2.5-flash'
+        )->generateContent(
+            'Say hello from Gemini'
+        );
+
+        return response()->json([
+            'response' => $response->text(),
+        ]);
+    });
+
+    Route::get(
+        '/report-test/{interview}',
+        function (
+            Interview $interview,
+            InterviewReportService $service
+        ) {
+            return $service->generateReport(
+                $interview
+            );
+        }
+    );
 });
