@@ -4,42 +4,66 @@ namespace App\Services\Interview;
 
 use App\Models\Interview;
 use App\Models\InterviewReport;
+use App\Services\AI\InterviewEvaluationService;
+
 
 class InterviewReportService
 {
     /**
      * Create a new class instance.
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(
+        private readonly InterviewEvaluationService $evaluationService
+    ) {}
 
     /**
      * Generate a report for an interview.
      */
     public function generateReport(Interview $interview): InterviewReport
     {
+        $evaluation = $this->evaluationService
+            ->evaluate(
+                $interview
+            );
+
+        $interview->loadMissing(
+            'questions.answer'
+        );
+
+        foreach ($evaluation['answers'] ?? [] as $item) {
+
+            $question = $interview
+                ->questions
+                ->firstWhere(
+                    'sequence',
+                    $item['sequence']
+                );
+
+            if (
+                ! $question ||
+                ! $question->answer
+            ) {
+                continue;
+            }
+
+            $question->answer->update([
+                'score' => $item['score'] ?? null,
+                'feedback' => $item['feedback'] ?? null,
+            ]);
+        }
+
         return InterviewReport::updateOrCreate(
             [
                 'interview_id' => $interview->id,
             ],
             [
-                'overall_score' => 75,
+                'overall_score' => (int) ($evaluation['overall_score'] ?? 60 ),
 
-                'strengths' => [
-                    'Good communication',
-                    'Strong technical knowledge',
-                ],
+                'strengths' => $evaluation['strengths'] ?? [],
 
-                'weaknesses' => [
-                    'Needs more system design practice',
-                ],
+                'weaknesses' => $evaluation['weaknesses'] ?? [],
 
-                'recommendations' => [
-                    'Practice coding challenges',
-                    'Improve SQL optimization skills',
-                ],
+                'recommendations' => $evaluation['recommendations'] ?? [],
             ]
         );
     }
