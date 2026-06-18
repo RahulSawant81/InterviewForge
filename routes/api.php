@@ -68,33 +68,33 @@ Route::prefix('v1')->group(function () {
     });
 
 
-    Route::get('/gemini-evaluation-test', function (
-        GeminiService $service
-    ) {
+    // Route::get('/gemini-evaluation-test', function (
+    //     GeminiService $service
+    // ) {
 
-        return $service->evaluateInterview(
-            'mock',
-            [
-                'What is Dependency Injection?',
-            ],
-            [
-                'Dependency Injection is a design pattern used to provide dependencies.'
-            ]
-        );
-    });
+    //     return $service->evaluateInterview(
+    //         'mock',
+    //         [
+    //             'What is Dependency Injection?',
+    //         ],
+    //         [
+    //             'Dependency Injection is a design pattern used to provide dependencies.'
+    //         ]
+    //     );
+    // });
 
-    Route::get('/gemini-test', function () {
+    // Route::get('/gemini-test', function () {
 
-        $response = Gemini::generativeModel(
-            model: 'gemini-2.5-flash'
-        )->generateContent(
-            'Say hello from Gemini'
-        );
+    //     $response = Gemini::generativeModel(
+    //         model: 'gemini-2.5-flash'
+    //     )->generateContent(
+    //         'Say hello from Gemini'
+    //     );
 
-        return response()->json([
-            'response' => $response->text(),
-        ]);
-    });
+    //     return response()->json([
+    //         'response' => $response->text(),
+    //     ]);
+    // });
 
     Route::get(
         '/report-test/{interview}',

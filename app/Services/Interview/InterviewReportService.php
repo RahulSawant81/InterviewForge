@@ -21,17 +21,43 @@ class InterviewReportService
      */
     public function generateReport(Interview $interview): InterviewReport
     {
-        $evaluation = $this->evaluationService->evaluate($interview);
+        $evaluation = $this->evaluationService
+            ->evaluate(
+                $interview
+            );
+
+        $interview->loadMissing(
+            'questions.answer'
+        );
+
+        foreach ($evaluation['answers'] ?? [] as $item) {
+
+            $question = $interview
+                ->questions
+                ->firstWhere(
+                    'sequence',
+                    $item['sequence']
+                );
+
+            if (
+                ! $question ||
+                ! $question->answer
+            ) {
+                continue;
+            }
+
+            $question->answer->update([
+                'score' => $item['score'] ?? null,
+                'feedback' => $item['feedback'] ?? null,
+            ]);
+        }
 
         return InterviewReport::updateOrCreate(
             [
                 'interview_id' => $interview->id,
             ],
             [
-                'overall_score' => (int) (
-                    $evaluation['overall_score']
-                    ?? 60
-                ),
+                'overall_score' => (int) ($evaluation['overall_score'] ?? 60 ),
 
                 'strengths' => $evaluation['strengths'] ?? [],
 

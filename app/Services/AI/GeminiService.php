@@ -3,128 +3,204 @@
 namespace App\Services\AI;
 
 use Gemini\Laravel\Facades\Gemini;
+use Illuminate\Support\Facades\Log;
 
 class GeminiService
 {
     /**
+     * @param array<int, array<string, mixed>> $items
      * @return array<string, mixed>
      */
-    public function evaluateInterview(
-        string $interviewType,
-        array $questions,
-        array $answers
-    ): array {
-
+    public function evaluateInterview(string $interviewType, array $items): array
+    {
         $prompt = $this->buildPrompt(
             $interviewType,
-            $questions,
-            $answers
+            $items
         );
 
-        $response = Gemini::generativeModel(
-            model: 'gemini-2.5-flash'
-        )->generateContent(
-            $prompt
-        );
+        try {
 
-        $text = trim($response->text());
+            $response = Gemini::generativeModel(
+                model: config('gemini.model')
+            )->generateContent(
+                $prompt
+            );
 
-        $text = str_replace(
-            [
-                '```json',
-                '```',
-            ],
-            '',
-            $text
-        );
+            $text = trim(
+                $response->text()
+            );
 
-        $text = trim($text);
-
-        /** @var array<string, mixed>|null $decoded */
-        $decoded = json_decode(
-            $text,
-            true
-        );
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            return [
-                'overall_score' => 0,
-                'strengths' => [],
-                'weaknesses' => [],
-                'recommendations' => [
-                    'AI evaluation could not be parsed.',
+            $text = str_replace(
+                [
+                    '```json',
+                    '```',
                 ],
+                '',
+                $text
+            );
+
+            /** @var array<string, mixed>|null $decoded */
+            $decoded = json_decode(
+                trim($text),
+                true
+            );
+
+            if (
+                json_last_error()
+                !== JSON_ERROR_NONE
+            ) {
+                return [
+                    'overall_score' => 60,
+                    'strengths' => [],
+                    'weaknesses' => [
+                        'AI evaluation could not be parsed.',
+                    ],
+                    'recommendations' => [],
+                    'answers' => [],
+                ];
+            }
+
+            return $decoded;
+
+        } catch (\Throwable $e) {
+
+            Log::error(
+                'Gemini evaluation failed',
+                [
+                    'message' => $e->getMessage(),
+                    'exception' => $e::class,
+                ]
+            );
+
+            return [
+                'overall_score' => 60,
+                'strengths' => [],
+                'weaknesses' => [
+                    'AI evaluation unavailable.',
+                ],
+                'recommendations' => [
+                    'Please try again later.',
+                ],
+                'answers' => [],
             ];
         }
-
-        return $decoded;
     }
 
     /**
-     * @param array<int, mixed> $questions
-     * @param array<int, mixed> $answers
+     * @param array<int, array<string, mixed>> $items
      */
-    private function buildPrompt(
-        string $interviewType,
-        array $questions,
-        array $answers
-    ): string {
+    private function buildPrompt(string $interviewType, array $items): string
+    {
 
         return <<<PROMPT
-You are a senior technical interviewer.
+            You are a senior technical interviewer.
 
-Interview Type:
-{$interviewType}
+            Interview Type:
+            {$interviewType}
 
-Questions:
-{$this->formatQuestions($questions)}
+            Questions and Answers:
+            {$this->formatItems($items)}
 
-Answers:
-{$this->formatAnswers($answers)}
+            Evaluate each answer individually.
 
-Evaluate the candidate's answers.
+            For each item:
+            - Assign a score from 0 to 100
+            - Provide constructive feedback
 
-overall_score must be an integer between 0 and 100.
+            overall_score must be an integer between 0 and 100.
 
-Return ONLY valid JSON.
+            Return ONLY valid JSON.
 
-Do not use markdown.
-Do not use code fences.
-Do not wrap the response in ```json.
-Do not add explanations.
+            Do not use markdown.
+            Do not use code fences.
+            Do not wrap the response in ```json.
+            Do not add explanations.
 
-Expected schema:
+            Expected schema:
 
-{
-  "overall_score": 85,
-  "strengths": [],
-  "weaknesses": [],
-  "recommendations": []
-}
-PROMPT;
+            {
+            "overall_score": 85,
+            "strengths": [],
+            "weaknesses": [],
+            "recommendations": [],
+            "answers": [
+                {
+                "sequence": 1,
+                "score": 80,
+                "feedback": "..."
+                }
+            ]
+        }
+        PROMPT;
     }
 
     /**
-     * @param array<int, mixed> $questions
+     * @param array<int, array<string, mixed>> $items
      */
-    private function formatQuestions(
-        array $questions
+    private function formatItems(
+        array $items
     ): string {
         return json_encode(
-            $questions,
+            $items,
             JSON_PRETTY_PRINT
         ) ?: '[]';
     }
 
     /**
-     * @param array<int, mixed> $answers
+     * @return array<string, mixed>
      */
-    private function formatAnswers(
-        array $answers
-    ): string {
-        return json_encode(
-            $answers,
-            JSON_PRETTY_PRINT
-        ) ?: '[]';
-    }
+    // public function evaluateAnswer(string $question, string $answer, string $interviewType): array
+    // {
+    //     $prompt = <<<PROMPT
+    // You are a senior interviewer.
+
+    // Interview Type:
+    // {$interviewType}
+
+    // Question:
+    // {$question}
+
+    // Candidate Answer:
+    // {$answer}
+
+    // Evaluate the answer.
+
+    // score must be an integer between 0 and 100.
+
+    // Return ONLY valid JSON.
+
+    // {
+    // "score": 85,
+    // "feedback": "Detailed feedback"
+    // }
+    // PROMPT;
+
+    //     $response = Gemini::generativeModel(
+    //         model: 'gemini-2.5-flash'
+    //     )->generateContent(
+    //         $prompt
+    //     );
+
+    //     $text = trim($response->text());
+
+    //     $text = str_replace(
+    //         [
+    //             '```json',
+    //             '```',
+    //         ],
+    //         '',
+    //         $text
+    //     );
+
+    //     /** @var array<string,mixed>|null $decoded */
+    //     $decoded = json_decode(
+    //         trim($text),
+    //         true
+    //     );
+
+    //     return $decoded ?? [
+    //         'score' => 60,
+    //         'feedback' => 'AI evaluation unavailable.',
+    //     ];
+    // }
 }
