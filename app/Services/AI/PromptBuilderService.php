@@ -3,62 +3,77 @@
 namespace App\Services\AI;
 
 use App\Enums\InterviewType;
+use App\Enums\DifficultyLevel;
 
 class PromptBuilderService
 {
     /**
-     * Create a new class instance.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-     /**
      * @param array<int, array<string, mixed>> $items
      */
-    public function build(
-        string $interviewType,
-        array $items
-    ): string {
-
+    public function build(string $interviewType, string $difficulty, array $items): string
+    {
         return match ($interviewType) {
 
             InterviewType::MOCK->value =>
-                $this->buildMockPrompt($items),
+                $this->buildMockPrompt(
+                    $difficulty,
+                    $items
+                ),
 
             InterviewType::HR->value =>
-                $this->buildHrPrompt($items),
+                $this->buildHrPrompt(
+                    $difficulty,
+                    $items
+                ),
 
             InterviewType::MCQ->value =>
-                $this->buildMcqPrompt($items),
+                $this->buildMcqPrompt(
+                    $difficulty,
+                    $items
+                ),
 
             InterviewType::CODING->value =>
-                $this->buildCodingPrompt($items),
+                $this->buildCodingPrompt(
+                    $difficulty,
+                    $items
+                ),
 
             default =>
-                $this->buildMockPrompt($items),
+                $this->buildMockPrompt(
+                    $difficulty,
+                    $items
+                ),
         };
     }
 
     /**
      * @param array<int, array<string, mixed>> $items
      */
-    private function buildMockPrompt(array $items): string
+    private function buildMockPrompt(string $difficulty, array $items): string
     {
-
         return <<<PROMPT
         You are a senior technical interviewer.
 
-        Evaluate the candidate's technical knowledge.
+        Interview Type:
+        MOCK
 
-        Focus on:
-        - PHP
-        - Laravel
-        - APIs
-        - Databases
-        - Design Patterns
-        - Problem Solving
+        Difficulty:
+        {$difficulty}
+
+        {$this->difficultyGuidelines($difficulty)}
+
+        Evaluate the candidate based on:
+
+        - Technical accuracy
+        - PHP knowledge
+        - Laravel knowledge
+        - API design
+        - Database knowledge
+        - Design patterns
+        - Problem solving
+        - Clarity of explanation
+
+        Adjust scoring according to the difficulty level.
 
         Questions and Answers:
 
@@ -71,20 +86,31 @@ class PromptBuilderService
     /**
      * @param array<int, array<string, mixed>> $items
      */
-    private function buildHrPrompt(array $items): string
+    private function buildHrPrompt(string $difficulty, array $items): string
     {
 
         return <<<PROMPT
         You are an HR interviewer.
 
-        Evaluate the candidate on:
+        Interview Type:
+        HR
+
+        Difficulty:
+        {$difficulty}
+
+        {$this->difficultyGuidelines($difficulty)}
+
+        Evaluate the candidate based on:
 
         - Communication
         - Teamwork
         - Leadership
         - Ownership
-        - Conflict Resolution
+        - Conflict resolution
         - Professionalism
+        - Confidence
+
+        Adjust scoring according to the difficulty level.
 
         Questions and Answers:
 
@@ -97,17 +123,27 @@ class PromptBuilderService
     /**
      * @param array<int, array<string, mixed>> $items
      */
-    private function buildMcqPrompt(array $items): string
+    private function buildMcqPrompt(string $difficulty, array $items): string
     {
 
         return <<<PROMPT
         You are evaluating an MCQ assessment.
 
-        Evaluate:
+        Interview Type:
+        MCQ
 
-        - Accuracy
-        - Knowledge
+        Difficulty:
+        {$difficulty}
+
+        {$this->difficultyGuidelines($difficulty)}
+
+        Evaluate based on:
+
         - Correctness
+        - Accuracy
+        - Subject knowledge
+
+        Treat answers objectively.
 
         Questions and Answers:
 
@@ -120,20 +156,32 @@ class PromptBuilderService
     /**
      * @param array<int, array<string, mixed>> $items
      */
-    private function buildCodingPrompt(array $items): string
+    private function buildCodingPrompt(string $difficulty, array $items): string
     {
 
         return <<<PROMPT
         You are a senior software engineer.
 
-        Evaluate:
+        Interview Type:
+        CODING
 
-        - Code Quality
+        Difficulty:
+        {$difficulty}
+
+        {$this->difficultyGuidelines($difficulty)}
+
+        Evaluate based on:
+
         - Correctness
-        - Complexity
-        - Performance
+        - Code quality
+        - Readability
         - Maintainability
-        - Best Practices
+        - Time complexity
+        - Space complexity
+        - Best practices
+        - Error handling
+
+        Adjust scoring according to the difficulty level.
 
         Questions and Answers:
 
@@ -164,6 +212,10 @@ class PromptBuilderService
         Do not use code fences.
         Do not add explanations.
 
+        overall_score must be an integer from 0 to 100.
+
+        answer.score must be an integer from 0 to 100.
+
         {
         "overall_score": 85,
         "strengths": [],
@@ -173,10 +225,52 @@ class PromptBuilderService
             {
             "sequence": 1,
             "score": 80,
-            "feedback": "..."
+            "feedback": "Detailed feedback"
             }
         ]
         }
         JSON;
+    }
+
+    private function difficultyGuidelines(string $difficulty): string
+    {
+
+        return match ($difficulty) {
+
+            DifficultyLevel::BEGINNER->value => <<<TEXT
+            Expected candidate level: Beginner.
+
+            Evaluate generously.
+
+            Expect:
+            - Basic concepts
+            - Fundamental understanding
+            - Simple explanations
+            - Limited real-world experience
+            TEXT,
+
+                    DifficultyLevel::INTERMEDIATE->value => <<<TEXT
+            Expected candidate level: Intermediate.
+
+            Expect:
+            - Practical experience
+            - Real-world examples
+            - Best practices
+            - Trade-off discussions
+            TEXT,
+
+                    DifficultyLevel::ADVANCED->value => <<<TEXT
+            Expected candidate level: Advanced.
+
+            Expect:
+            - Deep technical knowledge
+            - Architecture decisions
+            - Scalability considerations
+            - Performance optimization
+            - Leadership and mentoring experience
+            TEXT,
+
+            default => '',
+        };
     }
 }

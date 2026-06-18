@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Enums\DifficultyLevel;
 use App\Services\AI\PromptBuilderService;
 use Tests\TestCase;
 
@@ -14,6 +14,7 @@ class PromptBuilderServiceTest extends TestCase
 
         $prompt = $service->build(
             'mock',
+            DifficultyLevel::BEGINNER->value,
             []
         );
 
@@ -29,6 +30,7 @@ class PromptBuilderServiceTest extends TestCase
 
         $prompt = $service->build(
             'hr',
+            DifficultyLevel::BEGINNER->value,
             []
         );
 
@@ -44,6 +46,7 @@ class PromptBuilderServiceTest extends TestCase
 
         $prompt = $service->build(
             'mcq',
+            DifficultyLevel::BEGINNER->value,
             []
         );
 
@@ -59,11 +62,28 @@ class PromptBuilderServiceTest extends TestCase
 
         $prompt = $service->build(
             'coding',
+            DifficultyLevel::BEGINNER->value,
             []
         );
 
         $this->assertStringContainsString(
             'senior software engineer',
+            $prompt
+        );
+    }
+
+    public function test_beginner_difficulty_guidelines_are_added(): void
+    {
+        $service = new PromptBuilderService();
+
+        $prompt = $service->build(
+            'mock',
+            DifficultyLevel::BEGINNER->value,
+            []
+        );
+
+        $this->assertStringContainsString(
+            'Expected candidate level: Beginner',
             $prompt
         );
     }

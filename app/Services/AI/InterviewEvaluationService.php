@@ -32,6 +32,7 @@ class InterviewEvaluationService
         return $this->geminiService
             ->evaluateInterview(
                 $interview->type->value,
+                $interview->difficulty->value,
                 $items
             );
     }

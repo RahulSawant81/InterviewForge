@@ -14,10 +14,11 @@ class GeminiService
      * @param array<int, array<string, mixed>> $items
      * @return array<string, mixed>
      */
-    public function evaluateInterview(string $interviewType, array $items): array
+    public function evaluateInterview(string $interviewType, string $difficulty, array $items): array
     {
         $prompt = $this->promptBuilder->build(
             $interviewType,
+            $difficulty,
             $items
         );
 
