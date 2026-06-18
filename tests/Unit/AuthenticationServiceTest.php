@@ -14,6 +14,82 @@ class AuthenticationServiceTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_register_creates_user(): void
+    {
+        $service = app(AuthenticationService::class);
+
+        $user = $service->register([
+            'name' => 'Rahul',
+            'email' => 'rahul@test.com',
+            'password' => 'password123',
+        ]);
+
+        $this->assertInstanceOf(
+            User::class,
+            $user
+        );
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'rahul@test.com',
+        ]);
+    }
+
+    public function test_login_returns_token(): void
+    {
+        $service = app(AuthenticationService::class);
+
+        $service->register([
+            'name' => 'Rahul',
+            'email' => 'rahul@test.com',
+            'password' => 'password123',
+        ]);
+
+        $result = $service->login([
+            'email' => 'rahul@test.com',
+            'password' => 'password123',
+        ]);
+
+        $this->assertNotNull($result);
+
+        $this->assertArrayHasKey(
+            'token',
+            $result
+        );
+    }
+
+    public function test_login_with_invalid_password_returns_null(): void
+    {
+        $service = app(AuthenticationService::class);
+
+        $service->register([
+            'name' => 'Rahul',
+            'email' => 'rahul@test.com',
+            'password' => 'password123',
+        ]);
+
+        $result = $service->login([
+            'email' => 'rahul@test.com',
+            'password' => 'wrong-password',
+        ]);
+
+        $this->assertNull($result);
+    }
+
+    public function test_logout_revokes_tokens(): void
+    {
+        $user = User::factory()->create();
+
+        $user->createToken('test-token');
+
+        $this->assertCount(1, $user->tokens);
+
+        $service = app(AuthenticationService::class);
+
+        $service->logout($user);
+
+        $this->assertCount(0, $user->fresh()->tokens);
+    }
+
     public function test_reset_password_with_token_updates_user_password(): void
     {
         $user = User::factory()->create([
@@ -28,7 +104,7 @@ class AuthenticationServiceTest extends TestCase
             'created_at' => now(),
         ]);
 
-        $service = new AuthenticationService();
+        $service = new AuthenticationService;
         $result = $service->resetPasswordWithToken($user->email, $token, 'new-password-123');
 
         $this->assertTrue($result);
@@ -54,7 +130,7 @@ class AuthenticationServiceTest extends TestCase
             'created_at' => $createdAt,
         ]);
 
-        $service = new AuthenticationService();
+        $service = new AuthenticationService;
         $result = $service->resetPasswordWithToken($user->email, $token, 'new-password-123');
 
         $this->assertFalse($result);
@@ -73,7 +149,7 @@ class AuthenticationServiceTest extends TestCase
             'created_at' => now(),
         ]);
 
-        $service = new AuthenticationService();
+        $service = new AuthenticationService;
         $result = $service->resetPasswordWithToken($user->email, 'wrong-token', 'new-password-123');
 
         $this->assertFalse($result);

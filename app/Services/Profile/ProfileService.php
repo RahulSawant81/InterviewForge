@@ -23,8 +23,28 @@ class ProfileService
         return $profile;
     }
 
+    /**
+     * @param array{
+     *     profile_image?: UploadedFile|null,
+     *     phone_code?: string|null,
+     *     phone?: string|null,
+     *     country_id?: int|null,
+     *     state_id?: int|null,
+     *     city_id?: int|null,
+     *     headline?: string|null,
+     *     experience_years?: float|int|null,
+     *     current_company?: string|null,
+     *     current_ctc?: float|int|null,
+     *     expected_ctc?: float|int|null,
+     *     linkedin_url?: string|null,
+     *     github_url?: string|null,
+     *     portfolio_url?: string|null,
+     *     bio?: string|null
+     * } $data
+     */
     public function updateProfile(Profile $profile, array $data): Profile
     {
+
         $profile->fill(Arr::except($data, ['profile_image']));
 
         if (($data['profile_image'] ?? null) instanceof UploadedFile) {

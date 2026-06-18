@@ -12,11 +12,17 @@ class Country extends Model
         'code',
     ];
 
+    /**
+     * @return HasMany<State, $this>
+     */
     public function states(): HasMany
     {
         return $this->hasMany(State::class);
     }
 
+    /**
+     * @return HasMany<City, $this>
+     */
     public function cities(): HasMany
     {
         return $this->hasMany(City::class);

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Enum;
+namespace App\Enums;
 
 enum UserStatus: int
 {
@@ -17,4 +17,3 @@ enum UserStatus: int
         };
     }
 }
-

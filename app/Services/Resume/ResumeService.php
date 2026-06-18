@@ -6,11 +6,9 @@ use App\Models\Resume;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-
-
 
 class ResumeService
 {
@@ -42,6 +40,9 @@ class ResumeService
         ]);
     }
 
+    /**
+     * @return Collection<int, Resume>
+     */
     public function listResumes(User $user): Collection
     {
         return Resume::query()
@@ -78,6 +79,4 @@ class ResumeService
 
         abort(404, 'File not found');
     }
-
-
 }

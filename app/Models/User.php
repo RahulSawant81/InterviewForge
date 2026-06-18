@@ -3,19 +3,27 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserStatus;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-use App\Enum\UserStatus;
-
+/**
+ * @property UserStatus $status
+ * @property-read Role|null $role
+ */
 class User extends Authenticatable
 {
+    use HasApiTokens;
+
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -55,16 +63,25 @@ class User extends Authenticatable
         ];
     }
 
-    public function profile()
+    /**
+     * @return HasOne<Profile, $this>
+     */
+    public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);
     }
 
+    /**
+     * @return BelongsTo<Role, $this>
+     */
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
 
+    /**
+     * @param string|array<int, string> $roles
+     */
     public function hasRole(string|array $roles): bool
     {
         if (is_string($roles)) {
@@ -87,5 +104,13 @@ class User extends Authenticatable
     public function hasPermission(string $permissionName): bool
     {
         return $this->role?->permissions->contains('name', $permissionName) ?? false;
+    }
+
+    /**
+     * @return BelongsToMany<Skill, $this>
+     */
+    public function skills(): BelongsToMany
+    {
+        return $this->belongsToMany(Skill::class, 'user_skills');
     }
 }
