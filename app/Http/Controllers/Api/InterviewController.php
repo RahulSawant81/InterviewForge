@@ -16,6 +16,7 @@ use App\Services\Interview\InterviewAnswerService;
 use App\Services\Interview\InterviewQuestionService;
 use App\Services\Interview\InterviewReportService;
 use App\Services\Interview\InterviewService;
+use App\Services\Interview\QuestionGenerationService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,9 +27,11 @@ class InterviewController extends Controller
 
     public function __construct(
         private readonly InterviewService $interviewService,
+        private readonly QuestionGenerationService $questionGenerationService,
         private readonly InterviewQuestionService $questionService,
         private readonly InterviewAnswerService $answerService,
-        private readonly InterviewReportService $reportService
+        private readonly InterviewReportService $reportService,
+
     ) {}
 
     /**
@@ -125,18 +128,49 @@ class InterviewController extends Controller
         );
     }
 
-    public function generateQuestions(Interview $interview): JsonResponse
-    {
+    // public function generateQuestions(Interview $interview): JsonResponse
+    // {
+    //     abort_if(
+    //         $interview->user_id !== auth()->id(),
+    //         403,
+    //         'Unauthorized'
+    //     );
+
+    //     $questions = $this->questionService->generateQuestions($interview);
+
+    //     return $this->successResponse(
+    //         $questions,
+    //         'Questions generated successfully'
+    //     );
+    // }
+
+    public function generateQuestions(
+        Interview $interview
+    ): JsonResponse {
+
         abort_if(
             $interview->user_id !== auth()->id(),
             403,
             'Unauthorized'
         );
 
-        $questions = $this->questionService->generateQuestions($interview);
+        $result = $this->questionGenerationService
+            ->generateForInterview(
+                $interview
+            );
+
+        $this->questionGenerationService
+            ->saveQuestions(
+                $interview,
+                $result['questions'] ?? []
+            );
 
         return $this->successResponse(
-            $questions,
+            [
+                'count' => count(
+                    $result['questions'] ?? []
+                ),
+            ],
             'Questions generated successfully'
         );
     }
