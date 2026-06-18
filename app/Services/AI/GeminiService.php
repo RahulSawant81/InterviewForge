@@ -80,7 +80,7 @@ class GeminiService
             'overall_score' => 60,
             'strengths' => [],
             'weaknesses' => [
-                'AI evaluation unavailable.',
+                $message,
             ],
             'recommendations' => [
                 'Please try again later.',
