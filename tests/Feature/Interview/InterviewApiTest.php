@@ -6,6 +6,7 @@ use App\Enums\DifficultyLevel;
 use App\Enums\InterviewType;
 use App\Models\Interview;
 use App\Models\User;
+use App\Services\AI\GeminiQuestionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -13,6 +14,29 @@ use Tests\TestCase;
 class InterviewApiTest extends TestCase
 {
     use RefreshDatabase;
+
+    private function mockGeneratedQuestions(int $count = 5): void
+    {
+        $questions = [];
+
+        for ($sequence = 1; $sequence <= $count; $sequence++) {
+            $questions[] = [
+                'sequence' => $sequence,
+                'question' => "Interview question {$sequence}",
+            ];
+        }
+
+        $this->mock(
+            GeminiQuestionService::class,
+            function ($mock) use ($questions) {
+                $mock->shouldReceive('generateQuestions')
+                    ->once()
+                    ->andReturn([
+                        'questions' => $questions,
+                    ]);
+            }
+        );
+    }
 
     public function test_authenticated_user_can_create_interview(): void
     {
@@ -111,6 +135,8 @@ class InterviewApiTest extends TestCase
 
     public function test_authenticated_user_can_generate_questions(): void
     {
+        $this->mockGeneratedQuestions();
+
         /** @var User $user */
         $user = User::factory()->create();
 
@@ -127,7 +153,16 @@ class InterviewApiTest extends TestCase
             "/api/v1/interviews/{$interview->id}/generate-questions"
         );
 
-        $response->assertStatus(200);
+        $response
+            ->assertStatus(200)
+            ->assertJsonPath(
+                'message',
+                'Questions generated successfully'
+            )
+            ->assertJsonPath(
+                'data.count',
+                5
+            );
     }
 
     public function test_guest_cannot_access_interviews(): void

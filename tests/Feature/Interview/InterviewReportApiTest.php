@@ -2,9 +2,11 @@
 
 namespace Tests\Feature\Interview;
 
+use App\Enums\InterviewStatus;
 use App\Models\Interview;
 use App\Models\InterviewReport;
 use App\Models\User;
+use App\Services\AI\InterviewEvaluationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -12,6 +14,33 @@ use Tests\TestCase;
 class InterviewReportApiTest extends TestCase
 {
     use RefreshDatabase;
+
+    /**
+     * @param array<int, array<string, mixed>> $answers
+     */
+    private function mockInterviewEvaluation(
+        int $overallScore = 85,
+        array $answers = []
+    ): void {
+        $this->mock(
+            InterviewEvaluationService::class,
+            function ($mock) use ($overallScore, $answers) {
+                $mock->shouldReceive('evaluate')
+                    ->once()
+                    ->andReturn([
+                        'overall_score' => $overallScore,
+                        'strengths' => [
+                            'Clear communication',
+                        ],
+                        'weaknesses' => [],
+                        'recommendations' => [
+                            'Keep practicing.',
+                        ],
+                        'answers' => $answers,
+                    ]);
+            }
+        );
+    }
 
     public function test_authenticated_user_can_view_report(): void
     {
@@ -38,6 +67,8 @@ class InterviewReportApiTest extends TestCase
 
     public function test_report_is_generated_if_missing(): void
     {
+        $this->mockInterviewEvaluation();
+
         /** @var User $user */
         $user = User::factory()->create();
 
@@ -103,6 +134,8 @@ class InterviewReportApiTest extends TestCase
 
     public function test_authenticated_user_can_submit_interview(): void
     {
+        $this->mockInterviewEvaluation();
+
         /** @var User $user */
         $user = User::factory()->create();
 
@@ -135,7 +168,7 @@ class InterviewReportApiTest extends TestCase
             'interviews',
             [
                 'id' => $interview->id,
-                'status' => \App\Enums\InterviewStatus::COMPLETED->value,
+                'status' => InterviewStatus::COMPLETED->value,
             ]
         );
     }
