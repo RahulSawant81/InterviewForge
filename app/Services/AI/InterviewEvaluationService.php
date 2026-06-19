@@ -26,8 +26,8 @@ class InterviewEvaluationService
                 'answer' => $question->answer?->answer,
             ];
         })
-        ->values()
-        ->toArray();
+            ->values()
+            ->toArray();
 
         return $this->geminiService
             ->evaluateInterview(

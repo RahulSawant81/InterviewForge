@@ -6,6 +6,7 @@ class GenerateQuestionsData
 {
     /**
      * Create a new class instance.
+     *
      * @param array<int, string> $skills
      */
     public function __construct(

@@ -6,6 +6,7 @@ use Database\Factories\ResumeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -41,5 +42,13 @@ class Resume extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return HasOne<ResumeAnalysis, $this>
+     */
+    public function analysis(): HasOne
+    {
+        return $this->hasOne(ResumeAnalysis::class);
     }
 }

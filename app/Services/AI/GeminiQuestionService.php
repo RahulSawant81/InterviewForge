@@ -13,6 +13,7 @@ class GeminiQuestionService
 
     /**
      * @param array<int, string> $skills
+     *
      * @return array<string, mixed>
      */
     public function generateQuestions(

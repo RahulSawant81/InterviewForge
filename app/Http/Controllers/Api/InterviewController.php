@@ -7,11 +7,11 @@ use App\Http\Requests\InterviewAnswerRequest;
 use App\Http\Requests\InterviewSingleAnswerRequest;
 use App\Http\Requests\InterviewStoreRequest;
 use App\Http\Resources\InterviewAnswerResource;
+use App\Http\Resources\InterviewQuestionResource;
 use App\Http\Resources\InterviewReportResource;
 use App\Http\Resources\InterviewResource;
-use App\Http\Resources\InterviewQuestionResource;
-use App\Models\InterviewQuestion;
 use App\Models\Interview;
+use App\Models\InterviewQuestion;
 use App\Services\Interview\InterviewAnswerService;
 use App\Services\Interview\InterviewQuestionService;
 use App\Services\Interview\InterviewReportService;
@@ -58,7 +58,7 @@ class InterviewController extends Controller
             new InterviewResource($interview),
             'Interview created successfully.',
             201
-    );
+        );
     }
 
     /**

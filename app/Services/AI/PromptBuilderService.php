@@ -2,8 +2,8 @@
 
 namespace App\Services\AI;
 
-use App\Enums\InterviewType;
 use App\Enums\DifficultyLevel;
+use App\Enums\InterviewType;
 
 class PromptBuilderService
 {
@@ -14,35 +14,30 @@ class PromptBuilderService
     {
         return match ($interviewType) {
 
-            InterviewType::MOCK->value =>
-                $this->buildMockPrompt(
-                    $difficulty,
-                    $items
-                ),
+            InterviewType::MOCK->value => $this->buildMockPrompt(
+                $difficulty,
+                $items
+            ),
 
-            InterviewType::HR->value =>
-                $this->buildHrPrompt(
-                    $difficulty,
-                    $items
-                ),
+            InterviewType::HR->value => $this->buildHrPrompt(
+                $difficulty,
+                $items
+            ),
 
-            InterviewType::MCQ->value =>
-                $this->buildMcqPrompt(
-                    $difficulty,
-                    $items
-                ),
+            InterviewType::MCQ->value => $this->buildMcqPrompt(
+                $difficulty,
+                $items
+            ),
 
-            InterviewType::CODING->value =>
-                $this->buildCodingPrompt(
-                    $difficulty,
-                    $items
-                ),
+            InterviewType::CODING->value => $this->buildCodingPrompt(
+                $difficulty,
+                $items
+            ),
 
-            default =>
-                $this->buildMockPrompt(
-                    $difficulty,
-                    $items
-                ),
+            default => $this->buildMockPrompt(
+                $difficulty,
+                $items
+            ),
         };
     }
 
@@ -205,7 +200,7 @@ class PromptBuilderService
 
     private function jsonSchema(): string
     {
-        return <<<JSON
+        return <<<'JSON'
         Return ONLY valid JSON.
 
         Do not use markdown.
@@ -237,7 +232,7 @@ class PromptBuilderService
 
         return match ($difficulty) {
 
-            DifficultyLevel::BEGINNER->value => <<<TEXT
+            DifficultyLevel::BEGINNER->value => <<<'TEXT'
             Expected candidate level: Beginner.
 
             Evaluate generously.
@@ -249,7 +244,7 @@ class PromptBuilderService
             - Limited real-world experience
             TEXT,
 
-                    DifficultyLevel::INTERMEDIATE->value => <<<TEXT
+            DifficultyLevel::INTERMEDIATE->value => <<<'TEXT'
             Expected candidate level: Intermediate.
 
             Expect:
@@ -259,7 +254,7 @@ class PromptBuilderService
             - Trade-off discussions
             TEXT,
 
-                    DifficultyLevel::ADVANCED->value => <<<TEXT
+            DifficultyLevel::ADVANCED->value => <<<'TEXT'
             Expected candidate level: Advanced.
 
             Expect:

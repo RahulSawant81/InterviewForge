@@ -3,13 +3,13 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\InterviewController;
 use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\Api\ResumeController;
 use App\Http\Controllers\Api\QuestionController;
-use Gemini\Laravel\Facades\Gemini;
-use App\Services\AI\GeminiService;
+use App\Http\Controllers\Api\ResumeAnalysisController;
+use App\Http\Controllers\Api\ResumeController;
 use App\Models\Interview;
+use App\Services\AI\GeminiService;
 use App\Services\Interview\InterviewReportService;
-
+use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -37,6 +37,8 @@ Route::prefix('v1')->group(function () {
             Route::post('/', [ResumeController::class, 'store']);
 
             Route::get('/{resume}', [ResumeController::class, 'show']);
+            Route::get('/{resume}/analysis', [ResumeAnalysisController::class, 'show']);
+            Route::post('/{resume}/analysis', [ResumeAnalysisController::class, 'store']);
             Route::get('/{resume}/download', [ResumeController::class, 'download']);
 
             Route::delete('/{resume}', [ResumeController::class, 'destroy']);
@@ -52,12 +54,10 @@ Route::prefix('v1')->group(function () {
             Route::post('/{interview}/generate-questions', [InterviewController::class, 'generateQuestions']);
             Route::post('/{interview}/answers', [InterviewController::class, 'submitAnswers']);
             Route::get('/{interview}/answers', [InterviewController::class, 'getAnswers']);
-            Route::get('/{interview}/questions',[InterviewController::class, 'questions']);
+            Route::get('/{interview}/questions', [InterviewController::class, 'questions']);
         });
         Route::post('/questions/{question}/answer', [InterviewController::class, 'answer']);
         Route::apiResource('questions', QuestionController::class);
-
-
 
         // Admin-only route example using role middleware.
         Route::get('/admin-only', function () {
@@ -66,7 +66,6 @@ Route::prefix('v1')->group(function () {
             ]);
         })->middleware('role:admin|super_admin');
     });
-
 
     // Route::get('/gemini-evaluation-test', function (
     //     GeminiService $service

@@ -10,7 +10,7 @@ class PromptBuilderServiceTest extends TestCase
 {
     public function test_builds_mock_prompt(): void
     {
-        $service = new PromptBuilderService();
+        $service = new PromptBuilderService;
 
         $prompt = $service->build(
             'mock',
@@ -26,7 +26,7 @@ class PromptBuilderServiceTest extends TestCase
 
     public function test_builds_hr_prompt(): void
     {
-        $service = new PromptBuilderService();
+        $service = new PromptBuilderService;
 
         $prompt = $service->build(
             'hr',
@@ -42,7 +42,7 @@ class PromptBuilderServiceTest extends TestCase
 
     public function test_builds_mcq_prompt(): void
     {
-        $service = new PromptBuilderService();
+        $service = new PromptBuilderService;
 
         $prompt = $service->build(
             'mcq',
@@ -58,7 +58,7 @@ class PromptBuilderServiceTest extends TestCase
 
     public function test_builds_coding_prompt(): void
     {
-        $service = new PromptBuilderService();
+        $service = new PromptBuilderService;
 
         $prompt = $service->build(
             'coding',
@@ -74,7 +74,7 @@ class PromptBuilderServiceTest extends TestCase
 
     public function test_beginner_difficulty_guidelines_are_added(): void
     {
-        $service = new PromptBuilderService();
+        $service = new PromptBuilderService;
 
         $prompt = $service->build(
             'mock',

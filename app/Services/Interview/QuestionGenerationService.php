@@ -14,6 +14,7 @@ class QuestionGenerationService
 
     /**
      * @param array<int, string> $skills
+     *
      * @return array<string, mixed>
      */
     public function generate(
@@ -34,6 +35,7 @@ class QuestionGenerationService
 
     /**
      * Generate questions for an interview.
+     *
      * @return array<string, mixed>
      */
     public function generateForInterview(
@@ -41,9 +43,9 @@ class QuestionGenerationService
     ): array {
 
         if (empty($interview->technologies)) {
-            return response()->json([
-                'message' => 'Interview technologies are required.'
-            ], 422);
+            return [
+                'questions' => [],
+            ];
         }
 
         return $this->generate(

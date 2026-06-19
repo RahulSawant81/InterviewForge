@@ -4,6 +4,7 @@ namespace App\Services\Question;
 
 use App\Models\Question;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class QuestionService
 {
@@ -106,13 +107,13 @@ class QuestionService
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Collection<int, Question>
+     * @return Collection<int, Question>
      */
     public function getRandomQuestions(
         string $technology,
         string $difficulty,
         int $limit
-    ): \Illuminate\Database\Eloquent\Collection {
+    ): Collection {
         return Question::query()
             ->with('category')
             ->whereHas(

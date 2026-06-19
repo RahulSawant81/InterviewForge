@@ -2,21 +2,23 @@
 
 namespace App\Models;
 
+use Database\Factories\TagFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Question> $questions
+ * @property-read Collection<int, Question> $questions
  */
 class Tag extends Model
 {
-    /** @use HasFactory<\Database\Factories\TagFactory> */
+    /** @use HasFactory<TagFactory> */
     use HasFactory;
 
     protected $fillable = [
-       'name',
-       'slug',
+        'name',
+        'slug',
     ];
 
     /**
