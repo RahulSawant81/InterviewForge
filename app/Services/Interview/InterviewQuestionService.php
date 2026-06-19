@@ -4,8 +4,9 @@ namespace App\Services\Interview;
 
 use App\Models\Interview;
 use App\Models\InterviewQuestion;
-use Illuminate\Support\Collection;
+use App\Models\Question;
 use App\Services\Question\QuestionService;
+use Illuminate\Support\Collection;
 
 class InterviewQuestionService
 {
@@ -23,7 +24,7 @@ class InterviewQuestionService
      */
     public function generateQuestions(Interview $interview): Collection
     {
-        /** @var Collection<int, \App\Models\Question> $questions */
+        /** @var Collection<int, Question> $questions */
         $questions = collect();
 
         foreach ($interview->technologies as $technology) {
@@ -59,7 +60,6 @@ class InterviewQuestionService
             ->orderBy('sequence')
             ->get();
     }
-
 
     /**
      * @return Collection<int, InterviewQuestion>

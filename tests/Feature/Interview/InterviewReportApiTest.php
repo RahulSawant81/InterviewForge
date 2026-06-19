@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Interview;
 
+use App\Enums\InterviewStatus;
 use App\Models\Interview;
 use App\Models\InterviewReport;
 use App\Models\User;
@@ -135,7 +136,7 @@ class InterviewReportApiTest extends TestCase
             'interviews',
             [
                 'id' => $interview->id,
-                'status' => \App\Enums\InterviewStatus::COMPLETED->value,
+                'status' => InterviewStatus::COMPLETED->value,
             ]
         );
     }

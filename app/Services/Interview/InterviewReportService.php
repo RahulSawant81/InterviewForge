@@ -6,7 +6,6 @@ use App\Models\Interview;
 use App\Models\InterviewReport;
 use App\Services\AI\InterviewEvaluationService;
 
-
 class InterviewReportService
 {
     /**
@@ -57,7 +56,7 @@ class InterviewReportService
                 'interview_id' => $interview->id,
             ],
             [
-                'overall_score' => (int) ($evaluation['overall_score'] ?? 60 ),
+                'overall_score' => (int) ($evaluation['overall_score'] ?? 60),
 
                 'strengths' => $evaluation['strengths'] ?? [],
 

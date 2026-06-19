@@ -2,17 +2,18 @@
 
 namespace App\Models;
 
-
+use Database\Factories\QuestionCategoryFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Question> $questions
+ * @property-read Collection<int, Question> $questions
  */
 class QuestionCategory extends Model
 {
-    /** @use HasFactory<\Database\Factories\QuestionCategoryFactory> */
+    /** @use HasFactory<QuestionCategoryFactory> */
     use HasFactory;
 
     protected $fillable = [

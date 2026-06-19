@@ -2,30 +2,27 @@
 
 namespace App\Services\AI;
 
+use App\Models\Resume;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Support\Facades\Log;
 
-class GeminiService
+class GeminiResumeAnalysisService
 {
     public function __construct(
-        private readonly PromptBuilderService $promptBuilder
+        private readonly ResumeAnalysisPromptBuilderService $promptBuilder
     ) {}
 
     /**
-     * @param array<int, array<string, mixed>> $items
-     *
      * @return array<string, mixed>
      */
-    public function evaluateInterview(string $interviewType, string $difficulty, array $items): array
-    {
-        $prompt = $this->promptBuilder->build(
-            $interviewType,
-            $difficulty,
-            $items
-        );
+    public function analyze(
+        Resume $resume,
+        string $resumeText
+    ): array {
+        $prompt = $this->promptBuilder
+            ->build($resume, $resumeText);
 
         try {
-
             $response = Gemini::generativeModel(
                 model: config('gemini.model')
             )->generateContent(
@@ -45,8 +42,6 @@ class GeminiService
                 $text
             );
 
-            $text = trim($text);
-
             /** @var array<string, mixed>|null $decoded */
             $decoded = json_decode(
                 trim($text),
@@ -61,11 +56,9 @@ class GeminiService
             }
 
             return $decoded;
-
         } catch (\Throwable $e) {
-
             Log::error(
-                'Gemini evaluation failed',
+                'Gemini resume analysis failed',
                 [
                     'message' => $e->getMessage(),
                     'exception' => $e::class,
@@ -79,18 +72,19 @@ class GeminiService
     /**
      * @return array<string, mixed>
      */
-    private function fallbackResponse(string $message = 'AI evaluation unavailable.'): array
+    private function fallbackResponse(): array
     {
         return [
             'overall_score' => 60,
+            'skills' => [],
             'strengths' => [],
             'weaknesses' => [
-                $message,
+                'Resume analysis unavailable.',
             ],
             'recommendations' => [
                 'Please try again later.',
             ],
-            'answers' => [],
+            'missing_skills' => [],
         ];
     }
 }

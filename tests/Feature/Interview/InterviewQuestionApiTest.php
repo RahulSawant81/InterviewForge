@@ -2,16 +2,15 @@
 
 namespace Tests\Feature\Interview;
 
-use App\Models\User;
 use App\Models\Interview;
 use App\Models\InterviewQuestion;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class InterviewQuestionApiTest extends TestCase
 {
-
     use RefreshDatabase;
 
     public function test_authenticated_user_can_get_interview_questions(): void

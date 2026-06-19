@@ -3,10 +3,9 @@
 namespace App\Models;
 
 use App\Enums\DifficultyLevel;
+use Database\Factories\QuestionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Question extends Model
 {
-    /** @use HasFactory<\Database\Factories\QuestionFactory> */
+    /** @use HasFactory<QuestionFactory> */
     use HasFactory;
 
     protected $fillable = [

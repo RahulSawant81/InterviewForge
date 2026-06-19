@@ -3,9 +3,9 @@
 namespace Tests\Unit;
 
 use App\Enums\DifficultyLevel;
+use App\Models\Interview;
 use App\Models\Question;
 use App\Models\QuestionCategory;
-use App\Models\Interview;
 use App\Services\Interview\InterviewQuestionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -26,8 +26,7 @@ class InterviewQuestionServiceTest extends TestCase
                 'category_id' => $category->id,
                 'difficulty' => DifficultyLevel::INTERMEDIATE,
                 'is_active' => true,
-        ]);
-
+            ]);
 
         /** @var Interview $interview */
         $interview = Interview::factory()->create([
@@ -67,7 +66,7 @@ class InterviewQuestionServiceTest extends TestCase
                 'category_id' => $category->id,
                 'difficulty' => DifficultyLevel::INTERMEDIATE,
                 'is_active' => true,
-        ]);
+            ]);
 
         /** @var Interview $interview */
         $interview = Interview::factory()->create([
