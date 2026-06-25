@@ -19,6 +19,7 @@ class ResumeAnalysis extends Model
 
     protected $fillable = [
         'resume_id',
+        'summary',
         'overall_score',
         'skills',
         'strengths',

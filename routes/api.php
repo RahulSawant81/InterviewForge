@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\ResumeAnalysisController;
 use App\Http\Controllers\Api\ResumeController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Models\Interview;
 use App\Services\AI\GeminiService;
 use App\Services\Interview\InterviewReportService;
@@ -23,6 +24,8 @@ Route::prefix('v1')->group(function () {
         // Protected endpoints require a valid Sanctum token.
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me', [AuthController::class, 'me']);
+
+        Route::get('/dashboard/stats',[DashboardController::class, 'stats']);
 
         // Profile CRUD for the currently authenticated user.
         Route::prefix('profile')->group(function () {

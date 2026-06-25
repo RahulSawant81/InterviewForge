@@ -42,6 +42,12 @@ class GeminiResumeAnalysisService
                 $text
             );
 
+            Log::info('Gemini Raw Response',
+                [
+                    'response' => $text,
+                ]
+            );
+
             /** @var array<string, mixed>|null $decoded */
             $decoded = json_decode(
                 trim($text),
@@ -52,6 +58,13 @@ class GeminiResumeAnalysisService
                 json_last_error()
                 !== JSON_ERROR_NONE
             ) {
+                    Log::error(
+                    'Gemini resume analysis failed',
+                    [
+                        'message' => $e->getMessage(),
+                        'exception' => $e::class,
+                    ]
+                );
                 return $this->fallbackResponse();
             }
 
