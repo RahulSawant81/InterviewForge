@@ -35,6 +35,7 @@ class ResumeAnalysisService
                 'resume_id' => $resume->id,
             ],
             [
+                'summary' => $analysis['summary'] ?? null,
                 'overall_score' => (int) (
                     $analysis['overall_score'] ?? 60
                 ),

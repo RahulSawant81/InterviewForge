@@ -19,6 +19,7 @@ class ResumeAnalysisResource extends JsonResource
         return [
             'id' => $this->id,
             'resume_id' => $this->resume_id,
+            'summary' => $this->summary,
             'overall_score' => $this->overall_score,
             'skills' => $this->skills,
             'strengths' => $this->strengths,

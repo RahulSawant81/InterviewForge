@@ -42,19 +42,21 @@ class GeminiResumeAnalysisService
                 $text
             );
 
+            Log::info('Gemini Raw Response',
+                [
+                    'response' => $text,
+                ]
+            );
+
             /** @var array<string, mixed>|null $decoded */
             $decoded = json_decode(
                 trim($text),
                 true
             );
 
-            if (
-                json_last_error()
-                !== JSON_ERROR_NONE
-            ) {
+            if (json_last_error() !== JSON_ERROR_NONE) {
                 return $this->fallbackResponse();
             }
-
             return $decoded;
         } catch (\Throwable $e) {
             Log::error(
