@@ -19,7 +19,7 @@ class ResumeAnalysisController extends Controller
 
     public function show(Resume $resume): JsonResponse
     {
-        $this->authorizeResume( $resume );
+        $this->authorizeResume($resume);
 
         $analysis = $this->resumeAnalysisService
             ->getAnalysis($resume);
@@ -38,8 +38,7 @@ class ResumeAnalysisController extends Controller
 
     public function store(Resume $resume): JsonResponse
     {
-        $this->authorizeResume( $resume );
-
+        $this->authorizeResume($resume);
 
         $analysis = $this->resumeAnalysisService
             ->analyzeAndSave($resume);
@@ -50,7 +49,8 @@ class ResumeAnalysisController extends Controller
         );
     }
 
-    private function authorizeResume(Resume $resume): void {
+    private function authorizeResume(Resume $resume): void
+    {
         abort_if(
             $resume->user_id !== auth()->id(),
             403,
@@ -58,5 +58,4 @@ class ResumeAnalysisController extends Controller
         );
 
     }
-
 }

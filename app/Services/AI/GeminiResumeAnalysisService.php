@@ -54,20 +54,9 @@ class GeminiResumeAnalysisService
                 true
             );
 
-            if (
-                json_last_error()
-                !== JSON_ERROR_NONE
-            ) {
-                    Log::error(
-                    'Gemini resume analysis failed',
-                    [
-                        'message' => $e->getMessage(),
-                        'exception' => $e::class,
-                    ]
-                );
+            if (json_last_error() !== JSON_ERROR_NONE) {
                 return $this->fallbackResponse();
             }
-
             return $decoded;
         } catch (\Throwable $e) {
             Log::error(

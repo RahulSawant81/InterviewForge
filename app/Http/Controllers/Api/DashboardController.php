@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Resume;
 use App\Models\Interview;
-use App\Models\Report;
+use App\Models\Resume;
 use Illuminate\Http\JsonResponse;
 
 class DashboardController extends Controller

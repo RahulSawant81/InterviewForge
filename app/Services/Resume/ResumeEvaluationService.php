@@ -4,9 +4,9 @@ namespace App\Services\Resume;
 
 use App\Models\Resume;
 use App\Services\AI\GeminiResumeAnalysisService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Smalot\PdfParser\Parser;
-use Illuminate\Support\Facades\Log;
 
 class ResumeEvaluationService
 {
@@ -23,12 +23,12 @@ class ResumeEvaluationService
         $resumeText = $this->extractResumeText(
             $resume
         );
-        Log::info(
-            mb_check_encoding(
-                $resumeText,
-                'UTF-8'
-            )
-        );
+        // Log::info(
+        //     mb_check_encoding(
+        //         $resumeText,
+        //         'UTF-8'
+        //     )
+        // );
 
         return $this->geminiResumeAnalysisService
             ->analyze(
@@ -80,7 +80,7 @@ class ResumeEvaluationService
         $filePath = Storage::disk('public')
             ->path($resume->file_path);
 
-        $parser = new Parser();
+        $parser = new Parser;
 
         $pdf = $parser->parseFile(
             $filePath
@@ -94,13 +94,11 @@ class ResumeEvaluationService
             'UTF-8'
         );
 
-
         $text = iconv(
             'UTF-8',
             'UTF-8//IGNORE',
             $text
         );
-
 
         return trim(
             substr(

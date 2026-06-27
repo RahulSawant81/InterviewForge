@@ -16,12 +16,12 @@ class ResumeReportService
         //
     }
 
-    public function download (Resume $resume): Response
+    public function download(Resume $resume): Response
     {
         $analysis = $resume->analysis;
 
         abort_if(
-            !$analysis,
+            ! $analysis,
             404,
             'Resume analysis not found.'
         );

@@ -1,12 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\InterviewController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\ResumeAnalysisController;
 use App\Http\Controllers\Api\ResumeController;
-use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ResumeReportController;
 use App\Models\Interview;
 use App\Services\AI\GeminiService;
@@ -26,7 +26,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me', [AuthController::class, 'me']);
 
-        Route::get('/dashboard/stats',[DashboardController::class, 'stats']);
+        Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
 
         // Profile CRUD for the currently authenticated user.
         Route::prefix('profile')->group(function () {
