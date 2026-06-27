@@ -1,59 +1,236 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 InterviewForge Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+InterviewForge is an AI-powered interview preparation platform that helps job seekers improve their resumes, practice technical interviews, and receive personalized AI-driven feedback.
 
-## About Laravel
+This repository contains the **Laravel 12 REST API backend** powering the InterviewForge platform.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🔐 Authentication
 
-## Learning Laravel
+* Laravel Sanctum Authentication
+* User Registration & Login
+* Protected API Routes
+* Profile Management
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 👤 Profile Module
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* User Profile CRUD
+* Country, State & City Support
+* Profile Image Support
+* Clean Resource APIs
 
-## Laravel Sponsors
+### 📄 Resume Management
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+* Upload Resume (PDF)
+* Download Resume
+* Resume Metadata Management
+* Resume Storage
 
-### Premium Partners
+### 🤖 AI Resume Analysis
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+* Google Gemini AI Integration
+* Resume Text Extraction
+* Executive Summary Generation
+* ATS Compatibility Score
+* Skills Detection
+* Missing Skills Identification
+* Strengths Analysis
+* Weaknesses Analysis
+* Career Recommendations
+* Re-analysis Support
 
-## Contributing
+### 📑 PDF Report
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* Professional Resume Analysis Report
+* ATS Score
+* Executive Summary
+* Skills
+* Missing Skills
+* Strengths
+* Weaknesses
+* Recommendations
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🛠 Tech Stack
 
-## Security Vulnerabilities
+* Laravel 12
+* PHP 8.2+
+* MySQL
+* Laravel Sanctum
+* Google Gemini API
+* DomPDF
+* Laravel Pint
+* PHPStan (Larastan)
+* Scramble API Documentation
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 📁 Project Structure
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```text
+app/
+ ├── Http/
+ ├── Models/
+ ├── Services/
+ │    ├── AI/
+ │    └── Resume/
+ ├── Resources/
+ ├── Enums/
+ ├── Traits/
+ └── Helpers/
+```
+
+---
+
+## ⚙️ Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/RahulSawant81/InterviewForge.git
+```
+
+Go to the project directory
+
+```bash
+cd InterviewForge/backend
+```
+
+Install dependencies
+
+```bash
+composer install
+```
+
+Copy environment file
+
+```bash
+cp .env.example .env
+```
+
+Generate application key
+
+```bash
+php artisan key:generate
+```
+
+Configure your database inside `.env`
+
+Run migrations
+
+```bash
+php artisan migrate
+```
+
+Start the development server
+
+```bash
+php artisan serve
+```
+
+---
+
+## 🔑 Environment Variables
+
+Configure the following variables:
+
+```env
+APP_NAME=InterviewForge
+APP_URL=http://localhost:8000
+
+DB_CONNECTION=mysql
+DB_DATABASE=interviewforge
+
+GEMINI_API_KEY=YOUR_API_KEY
+```
+
+---
+
+## 📚 API Documentation
+
+Generate API documentation using Scramble:
+
+```bash
+php artisan scramble:export
+```
+
+---
+
+## 🧪 Code Quality
+
+Run formatter
+
+```bash
+composer format
+```
+
+Static Analysis
+
+```bash
+composer analyse
+```
+
+Run Tests
+
+```bash
+composer test
+```
+
+Run all quality checks
+
+```bash
+composer quality
+```
+
+---
+
+## 🚧 Roadmap
+
+### ✅ Completed
+
+* Authentication
+* Profile Module
+* Resume Upload
+* Resume Download
+* AI Resume Analysis
+* PDF Report Generation
+
+### 🚀 In Progress
+
+* AI Mock Interview
+* AI Answer Evaluation
+* Interview Feedback
+* Dashboard & Analytics
+
+### 🔮 Planned
+
+* Career Coach
+* Job Recommendation Engine
+* Resume ATS Optimization
+* AI Interview Voice Support
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome. Feel free to open issues or submit pull requests.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👨‍💻 Author
+
+**Rahul Sawant**
+
+Backend Developer | Full Stack Developer | AI Enthusiast
+
+GitHub: https://github.com/RahulSawant81
