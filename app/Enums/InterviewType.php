@@ -4,9 +4,18 @@ namespace App\Enums;
 
 enum InterviewType: string
 {
-    case MCQ = 'mcq';
-    case CODING = 'coding';
-    case MOCK = 'mock';
+    case TECHNICAL = 'technical';
+
     case HR = 'hr';
 
+    case MIXED = 'mixed';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::TECHNICAL => 'Technical',
+            self::HR => 'HR',
+            self::MIXED => 'Mixed',
+        };
+    }
 }

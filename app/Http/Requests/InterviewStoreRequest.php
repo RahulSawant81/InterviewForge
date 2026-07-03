@@ -29,6 +29,7 @@ class InterviewStoreRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'type' => ['required', new Enum(InterviewType::class)],
             'difficulty' => ['required', new Enum(DifficultyLevel::class)],
+            'technologies' => ['nullable', 'array'],
             'technologies.*' => ['string', 'max:100'],
             'total_questions' => ['required', 'integer', 'min:1', 'max:50'],
         ];

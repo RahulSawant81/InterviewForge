@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * app\Services\AI\GeminiQuestionService.php
+ */
+
 namespace App\Services\AI;
 
 use Gemini\Laravel\Facades\Gemini;
