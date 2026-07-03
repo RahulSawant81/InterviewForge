@@ -23,9 +23,9 @@ class InterviewService
             'title' => $data['title'],
             'type' => $data['type'],
             'difficulty' => $data['difficulty'],
-            'technologies' => $data['technologies'],
+            'technologies' => $data['technologies'] ?? [],
             'total_questions' => $data['total_questions'],
-            'status' => InterviewStatus::DRAFT->value,
+            'status' => InterviewStatus::DRAFT,
         ]);
     }
 

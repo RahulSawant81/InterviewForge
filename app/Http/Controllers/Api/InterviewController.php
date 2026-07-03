@@ -66,11 +66,7 @@ class InterviewController extends Controller
      */
     public function show(Interview $interview): JsonResponse
     {
-        abort_if(
-            $interview->user_id !== auth()->id(),
-            403,
-            'Unauthorized'
-        );
+        $this->authorizeInterview($interview);
 
         return $this->successResponse(
             new InterviewResource($interview),
@@ -83,12 +79,7 @@ class InterviewController extends Controller
      */
     public function start(Interview $interview): JsonResponse
     {
-
-        abort_if(
-            $interview->user_id !== auth()->id(),
-            403,
-            'Unauthorized'
-        );
+        $this->authorizeInterview($interview);
 
         $interview = $this->interviewService
             ->start($interview);
@@ -105,11 +96,7 @@ class InterviewController extends Controller
      */
     public function submit(Interview $interview, Request $request): JsonResponse
     {
-        abort_if(
-            $interview->user_id !== auth()->id(),
-            403,
-            'Unauthorized'
-        );
+        $this->authorizeInterview($interview);
 
         $interview = $this->interviewService->submit($interview, $request->all());
 
@@ -148,11 +135,8 @@ class InterviewController extends Controller
         Interview $interview
     ): JsonResponse {
 
-        abort_if(
-            $interview->user_id !== auth()->id(),
-            403,
-            'Unauthorized'
-        );
+        $this->authorizeInterview($interview);
+        
 
         $result = $this->questionGenerationService
             ->generateForInterview(
@@ -165,11 +149,11 @@ class InterviewController extends Controller
                 $result['questions'] ?? []
             );
 
+        $interview->loadCount('questions');
+
         return $this->successResponse(
             [
-                'count' => count(
-                    $result['questions'] ?? []
-                ),
+                'count' => $interview->questions()->count(),
             ],
             'Questions generated successfully'
         );
@@ -177,11 +161,7 @@ class InterviewController extends Controller
 
     public function submitAnswers(Interview $interview, InterviewAnswerRequest $request): JsonResponse
     {
-        abort_if(
-            $interview->user_id !== auth()->id(),
-            403,
-            'Unauthorized'
-        );
+        $this->authorizeInterview($interview);;
 
         $answers = $this->answerService->submitBulkAnswers($interview, $request->validated()['answers']);
 
@@ -194,11 +174,7 @@ class InterviewController extends Controller
 
     public function getAnswers(Interview $interview): JsonResponse
     {
-        abort_if(
-            $interview->user_id !== auth()->id(),
-            403,
-            'Unauthorized'
-        );
+        $this->authorizeInterview($interview);
 
         $answers = $this->answerService->getAnswers($interview);
 
@@ -210,11 +186,7 @@ class InterviewController extends Controller
 
     public function report(Interview $interview): JsonResponse
     {
-        abort_if(
-            $interview->user_id !== auth()->id(),
-            403,
-            'Unauthorized'
-        );
+        $this->authorizeInterview($interview);
 
         $report = $this->reportService
             ->getReport($interview);
@@ -232,11 +204,7 @@ class InterviewController extends Controller
 
     public function questions(Interview $interview): JsonResponse
     {
-        abort_if(
-            $interview->user_id !== auth()->id(),
-            403,
-            'Unauthorized'
-        );
+        $this->authorizeInterview($interview);
 
         $questions = $this->questionService
             ->getQuestions(
@@ -262,6 +230,14 @@ class InterviewController extends Controller
         return $this->successResponse(
             $answer,
             'Answer submitted successfully.'
+        );
+    }
+
+    private function authorizeInterview(Interview $interview): void {
+        abort_if(
+            $interview->user_id !== auth()->id(),
+            403,
+            'Unauthorized'
         );
     }
 }
